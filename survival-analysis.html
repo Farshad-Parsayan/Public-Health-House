@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn survival analysis for public health, including life table, Kaplan-Meier survival curve, 
+    log-rank test, and Cox proportional hazards model.">
+    <title>Survival Analysis</title>
+
+    <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+
+            <h1>Survival Analysis</h1>
+            <p class="about">This section contains the statistical methods used in survival analysis, including key concepts, models, and interpretations.</p>
+            <p class="about" style="margin-top: -10px;">⚠️ <strong>Prerequisites:</strong> install R and RStudio from <a href="https://posit.co/download/rstudio-desktop/">Posit.</a> Required packages: survival & survminer</p>
+            <h2>Topics</h2>
+            <ol>
+                <li><a href="#life-table">Life Table</a></li>
+                <li><a href="#Kaplan-Meier-table">Kaplan-Meier Table</a></li>
+                <li><a href="#survival-curve">Survival Curve</a></li>
+                <li><a href="#log-rank-test">Log-Rank Test</a></li>
+                <li><a href="#cox-proportional-hazards-model">Cox Proportional Hazards Model</a></li>
+                <li><a href="#the-proportionality-assumption">The Proportionality Assumption</a></li>
+            </ol>
+
+
+        <section>
+            <h2 id="life-table">Life Table</h2>
+            <ul>
+                <li>A life table is a demographic tool used to analyze death rates and calculate life expectancies at various ages.</li>
+                <li>Two Different Kinds: cohort or generational life tables, current or period life tables</li>
+                <li>Cohort life tables take an actual set of people born at the same time and follow them up for their whole lives, also known as birth cohorts.</li>
+                <li>Period life tables take a hypothetical cohort of people born at the same time using census data and uses the assumption that they are subject to the age-specific mortality rates of a region or country.</li>
+                <li>A set or cohort of patients are enrolled at time zero and then followed up to see who gets the outcome of interest, such as death, and when they get it.</li>
+                <li>Loss to follow up (censored): Participants who drop out of the study whose outcome we don't know exactly, shown by a cross (+) next to the time value.</li>
+                <li>The probability of survival past time t is called survival function.</li>
+            </ul>
+
+            <table class="survival-table">
+
+                <thead>
+                <tr>
+                <th>Time (t) in Days</th>
+                <th>Number of Patients Alive at Time t</th>
+                <th>Number of Patients Who Died at Time t</th>
+                <th>Probability of Survival Past Time t</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                <td>0 (study starts)</td>
+                <td>100</td>
+                <td>0</td>
+                <td>1</td>
+                </tr>
+
+                <tr>
+                <td>1</td>
+                <td>100</td>
+                <td>2</td>
+                <td>0.98</td>
+                </tr>
+
+                <tr>
+                <td>2</td>
+                <td>98</td>
+                <td>??</td>
+                <td>??</td>
+                </tr>
+
+                <tr>
+                <td>3</td>
+                <td>??</td>
+                <td>??</td>
+                <td>??</td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <section>
+            <h2 id="Kaplan-Meier-table">Kaplan-Meier Table</h2>
+            <ul>
+                <li>A non-parametric life table used in survival analysis to estimate the probability of an event occurring over time.</li>
+                <li>No assumption of underlying probability distribution.</li>
+                <li>Start by computing the proportion of patients that survive the day.</li>
+                <li>For example, on day 0,  there are no deaths. Hence the proportion surviving is 1. On the following day, 2 out of 8 patients don't make it; 75% survive the day.</li>
+                <li>The probability of surviving past day t is simply the probability of surviving past day t-1 times the proportion of patients that survive on day t.</li>
+            </ul>
+
+            <table class="survival-table">
+
+                <thead>
+                <tr>
+                <th>Time (t) in Days</th>
+                <th>Patients Alive at Time t</th>
+                <th>Deaths at Time t</th>
+                <th>Proportion Surviving Past Time t</th>
+                <th>Probability of Survival Past Time t</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                <td>0 (study starts)</td>
+                <td>8</td>
+                <td>0</td>
+                <td>(8−0)/8 = 1</td>
+                <td>1</td>
+                </tr>
+
+                <tr>
+                <td>1</td>
+                <td>8</td>
+                <td>2</td>
+                <td>(8−2)/8 = 0.75</td>
+                <td>1 × 0.75 = <strong>0.75</strong></td>
+                </tr>
+
+                <tr>
+                <td>4</td>
+                <td>6</td>
+                <td>1</td>
+                <td>(6−1)/6 = 0.83</td>
+                <td>0.75 × 0.83 = <strong>0.623</strong></td>
+                </tr>
+
+                <tr>
+                <td>5</td>
+                <td>5</td>
+                <td>1</td>
+                <td>(5−1)/5 = 0.8</td>
+                <td>0.623 × 0.8 = <strong>0.498</strong></td>
+                </tr>
+
+                <tr>
+                <td>6+</td>
+                <td>4</td>
+                <td>0</td>
+                <td>4/4 = 1</td>
+                <td>0.498 × 1 = <strong>0.498</strong></td>
+                </tr>
+
+                <tr>
+                <td>9</td>
+                <td>3</td>
+                <td>1</td>
+                <td>(3−1)/3 = 0.667</td>
+                <td>0.498 × 0.667 = <strong>0.332</strong></td>
+                </tr>
+
+                <tr>
+                <td>9+</td>
+                <td>2</td>
+                <td>0</td>
+                <td>2/2 = 1</td>
+                <td>0.332 × 1 = <strong>0.332</strong></td>
+                </tr>
+
+                <tr>
+                <td>22</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0/1 = 0</td>
+                <td><strong>0</strong></td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <section>
+            <h2 id="survival-curve">Survival Curve</h2>
+            <ul>
+                <li>The plot of the survival function versus time is called the survival curve.</li>
+                <li>To create the survival curve, plot the time column on x axis against the probability of survival column on y axis, with 0 on the bottom and 1 as the maximum.</li>
+                <li>The probability of survival is assumed to be the same until the next death occurs, that's why survival curve looks like steps.</li>
+                <li>On the survival curve, censored participantes are marked by a cross (+) on the survival curve.</li>
+            </ul>
+
+            <figure class="figure">
+                <img src="survival-curve.png" alt="Kaplan-Meier Survival Curve" class="survival-plot">
+                <figcaption style="margin-top: -25px;">Kaplan–Meier survival curve</figcaption>
+            </figure>
+
+            <h4 style="margin-bottom: -25px; margin-top: -25px;">R Codes for Survival Curve</h4>
+            <pre class="r-code"><code>
+
+                > # Install packages (run once if not already installed)
+                > install.packages("survival")
+
+                # > Load survival package
+                > library(survival)
+
+                # Define event times
+                > time <- c(t1, t2, t3, ...)
+
+                # Define survival probabilities at each time
+                > survival <- c(S1, S2, S3, ...)
+
+                # Define censoring times
+                > censor_time <- c(c1, c2, ...)
+
+                # Survival probability at censoring times
+                > censor_survival <- c(Sc1, Sc2, ...)
+
+                # Create Kaplan-Meier step curve
+                > plot(time, survival,
+                +      type = "s",
+                +      lwd = 2,
+                +      xlab = "Time",
+                +      ylab = "Survival probability",
+                +      main = "Kaplan-Meier Survival Curve",
+                +      ylim = c(0,1))
+
+                # Add event points
+                > points(time, survival, pch = 16)
+
+                # Add censor marks
+                > points(censor_time, censor_survival, pch = 4, cex = 1.5, col = "red")
+            </code></pre>
+        </section>
+        <section>
+            <h2 id="log-rank-test">Log-Rank Test</h2>
+            <ul>
+                <li>A statistical method used to compare two survival curves to determine if they are significantly different in probability.</li>
+                <li>It's non-parametric, no need to know anything about the shape of the survival curve or the distribution of survival times.</li>
+                <li>Based on a comparison of the observed numbers of deaths and the numbers of deaths expected if in fact there were no difference in the probability of death between the groups.</li>
+                <li>It uses a chi-squared test.</li>
+            </ul>
+
+            <h4>R Codes for Log-Rank Test</h4>
+
+            <pre class="r-code"><code>
+                
+                > # Load survival package
+                > library(survival)
+
+                > # import the dataset
+                > df <- read.csv("dataset.csv", header = TRUE, sep = ",")
+
+                > # Example data: Time to event (days) and status
+                > # time: follow-up time
+                > # status: event indicator (1 = event occurred, 0 = censored)
+                
+                > time <- df$time
+                > status <- df$status
+
+                > # Group variable (e.g., treatment vs control)
+                > group <- c("A","A","A","B","B","B","B","B")
+
+                > # Create a survival object
+                > surv_obj <- Surv(time, status)
+
+                > # Fit survival curves by group
+                > fit <- survfit(surv_obj ~ group)
+
+                > # Plot the survival curves
+                > plot(fit,
+                +      col = c("blue","red"),
+                +      lty = 1:2,
+                +      xlab = "Time (days)",
+                +      ylab = "Survival probability",
+                +      main = "Kaplan-Meier Curves by Group")
+                > legend("topright", legend = levels(factor(group)), col = c("blue","red"), lty = 1:2)
+
+                > # Run log-rank test to compare groups
+                > # You can add rho = 0 for standard log-rank, or rho = 1 for Gehan-Wilcoxon test
+                > logrank_test <- survdiff(surv_obj ~ group)
+
+                > # View test result
+                > logrank_test
+            </code></pre>
+
+            <h4>Example</h4>
+            <pre class="r-code"><code>
+                > # Log-rank test comparing age groups
+                > survdiff(formula = Surv(fu_time, death_num) ~ age_65plus, data = df)
+
+                                N Observed Expected (O-E)^2/E (O-E)^2/V
+                age_65plus=<65 115       18       67     35.85      41.7
+                age_65plus=≥65 885      474      425      5.65      41.7
+
+                Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
+            </code></pre>
+
+            <h4>Interpretation</h4>
+            <ul>
+                <li>The chi-squared statistic is 41.7 with 1 degree of freedom.</li>
+                <li>The p-value is extremely small (1e-10), indicating a statistically significant difference.</li>
+                <li>Patients aged ≥65 have more observed events (474) than expected (425), suggesting higher risk.</li>
+                <li>Patients aged &lt;65 have fewer observed events (18) than expected (67), suggesting lower risk.</li>
+                <li>Overall, age ≥65 is strongly associated with increased event probability.</li>
+            </ul>
+
+        </section>
+
+        <section>
+
+            <h2 id="cox-proportional-hazards-model">Cox Proportional Hazards Model</h2>
+            <ul>
+                <li>Caplan-Meier plot and log-rank test are great for exploring the relationship between one predictor and mortality over time.</li>
+                <li>In contrast, Cox's approach can handle multiple predictors. It is a type of regression.</li>
+                <li>The hazards are assumed by the model to be proportional.</li>
+                <li>Hazard is the risk of death at a given moment in time.</li>
+                <li>In other words, h(t) is the probability of dying at time t having survived up to time t.</li>
+                <li>The hazard can change over time.</li>
+                <li>The way the hazard changes over time is called the hazard function or hazard rate.</li>
+                <li>The hazard is proportional (Hazard 1 = Hazard 2 * N). One hazard divided by the other is called the hazard ratio.</li>
+                <li>The risk set at time t is defined as the set of patients at time t that are at risk of experiencing the event.</li>
+                <li>If the Cox model has two or more predictor variables, it is called the multiple Cox model.</li>
+                <li>Risk models can put patients into, for example, low-, medium-, or high-risk in a process called risk stratification.</li>
+                <li>You should know and mention the reference group(s) while interpreting the results.</li>
+                <li>By default, R sets the reference category as the lowest value for the variable.</li>
+                <li>In case there are missing values (NAs), they can be replaced by another value (such as 9) as the new category.</li>
+            </ul>
+
+            <h4>Disadvantages of the Cox Model</h4>
+
+            <ul>
+                <li>Cox does not care about the distribution of survival times or what the hazard function looks like. This is why it is called semi-parametric.</li>
+                <li>The Cox model was developed to look at the effect of covariates on the hazard function rather than to estimate survival times.</li>
+                <li>There are several fully parametric models such as Weibull, exponential, log normal, and log-logistic models, where hazard function has to be specified.</li>
+                <li>survival analysis can be run in a Bayesian framework. Bayesian analysis is in general more complicated but very powerful.</li>
+            </ul>
+
+            <h4>R Codes to Describe the Data</h4>
+
+            <pre class="r-code"><code>
+                > # import the dataset
+                > df <- read.csv("dataset.csv", header = TRUE, sep = ",")
+
+                > # Use summary() for numeric variabels
+                > summary(df$age)
+
+                > # Use table() for categorical variables
+                > t <- table(df$gender, exclude = NULL)
+
+                > # Add the total column
+                > addmargins(t)
+
+                > # Get the percentages rounded to one decimal point
+                > round(100*prop.table(t),digits=1)
+
+                > # Change the reference categories (ref) if Required
+                > df$gender <- relevel(df$gender, ref = 2)
+            </code></pre>
+
+            <h4>R Codes for Cox Regression</h4>
+
+            <pre class="r-code"><code>
+
+                > # Install packages (run once if not already installed)
+                > install.packages("survival")
+                > install.packages("survminer")
+
+                > # Load survival package
+                > library(survival)
+
+                > # Example dataset variables
+                > # time: follow-up time
+                > # status: event indicator (1 = event occurred, 0 = censored)
+                > # predictor1, predictor2: explanatory variables
+
+                > time <- df$time
+                > status <- df$status
+
+                > # Create survival object
+                > surv_obj <- Surv(time, status)
+
+                > # Fit Cox proportional hazards model
+                > cox_model <- coxph( formula = surv_obj ~ predictor1 + predictor2, data = df)
+
+                > # View model summary
+                > summary(cox_model)
+
+                > # Extract hazard ratios
+                > exp(coef(cox_model))
+
+                > # Confidence intervals for hazard ratios
+                > exp(confint(cox_model))
+
+                > # Test proportional hazards assumption
+                > ph_test <- cox.zph(cox_model)
+                > ph_test
+
+                > # Plot proportional hazards test
+                > plot(ph_test)
+
+            </code></pre>
+
+            <h4>Example</h4>
+
+            <pre class="r-code"><code>
+                > coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +
+                +       copd + hypertension, data = df)
+
+                n = 1000, number of events = 492
+
+                                HR    95% CI           p
+                age_65plus≥65    4.15  (2.59 – 6.65)   3.35e-09 ***
+                diabetes         0.90  (0.73 – 1.10)   0.292
+                copd             1.08  (0.88 – 1.32)   0.451
+                hypertension     0.96  (0.80 – 1.16)   0.704
+
+                Model tests:
+                Likelihood ratio test = 58.26  on 4 df, p = 7e-12
+                Wald test             = 37.17  on 4 df, p = 2e-07
+                Score (log-rank) test = 43.55  on 4 df, p = 8e-09
+
+                Concordance = 0.572
+            </code></pre>
+
+            <h4>Definitions</h4>
+
+            <ul>
+                <li><strong>Hazard Ratio (HR):</strong> The hazard ratio represents the relative risk of the event associated with a predictor. HR &gt; 1: increased risk; HR &lt; 1: decreased risk compared with the reference group.</li>
+                <li><strong>95% Confidence Interval (95% CI):</strong> The range of values within which the true hazard ratio is expected to lie with 95% confidence. If it includes 1, the association is not statistically significant.</li>
+                <li><strong>p-value:</strong> Measures the statistical significance of each predictor. A small p-value (typically &lt; 0.05) suggests that the predictor is significantly associated with the hazard of the event.</li>
+                <li><strong>Likelihood Ratio Test:</strong> Compares the fitted Cox model with a model that contains no predictors. A significant result indicates the predictors improve the model's ability to explain the outcome.</li>
+                <li><strong>Wald Test:</strong> Tests whether individual regression coefficients differ significantly from zero. It is commonly used to assess the significance of each predictor variable in the model.</li>
+                <li><strong>Score Test (Log-rank test):</strong> Tests the association between predictors and survival time. In Cox models, it is mathematically related to the log-rank test used to compare survival curves.</li>
+                <li><strong>Concordance (C-index):</strong> Measures the model’s ability to correctly rank individuals by risk. Values range from 0.5 (no predictive ability) to 1.0 (perfect prediction).</li>
+                <li><strong>R-squared:</strong> A measure of the proportion of variation in the outcome explained by the model. In Cox models, pseudo R-squared is used and values are typically lower than in linear regression.</li>
+                <li><strong>Proportional Hazards Assumption:</strong> The Cox model assumes that hazard ratios remain constant over time. This assumption can be tested using methods such as the <code>cox.zph()</code> test.</li>
+            </ul>
+
+            <h4>Interpretation</h4>
+
+            <ul>
+                <li>The dataset includes 1,000 patients, of whom 492 experienced the event during follow-up.</li>
+                <li>Patients aged ≥65 years have a hazard ratio of 4.15 compared with those aged &lt;65, so their risk of the event is more than four times higher. This association is statistically significant (p &lt; 0.001).</li>
+                <li>Diabetes shows HR = 0.90, but the confidence interval includes 1 and the p-value is not statistically significant (p = 0.292). Therefore, no clear association with the event is observed.</li>
+                <li>COPD shows HR = 1.08, but this association is not statistically significant (p = 0.451).</li>
+                <li>Hypertension shows HR = 0.96 and is also not statistically significant (p = 0.704).</li>
+                <li>The overall model tests (Likelihood ratio, Wald, and Score tests) are statistically significant, indicating that at least one predictor is associated with the outcome.</li>
+                <li>The concordance statistic (0.572) suggests that the model has modest ability to distinguish between individuals with higher and lower risk.</li>
+            </ul>
+
+            <h4>R Codes for Kaplan-Meier Plot Using Survminer</h4>
+
+            <pre class="r-code"><code>
+
+                > # Load survminer package
+                > library(survminer)
+
+                > # Fit Kaplan-Meier survival curves
+                > fit <- survfit(surv_object ~ group, data = df)
+
+                > # Plot survival curves using survminer
+                > ggsurvplot(fit,
+                +            data = df,
+                +            risk.table = TRUE,
+                +            pval = TRUE,
+                +            conf.int = TRUE,
+                +            xlab = "Time",
+                +            ylab = "Survival probability",
+                +            legend.title = "Group",
+                +            legend.labs = c("Group 1", "Group 2"),
+                +            palette = c("blue", "red"))
+
+                > # Alternative plot with "ggplot2" package
+                > autoplot(fit) + theme_bw() 
+
+                > # Another Way to plot
+                > plot(fit)
+
+            
+            </code></pre>
+
+            <ul>
+                <li><strong>risk.table:</strong> Displays the number of individuals at risk at each time point.</li>
+                <li><strong>pval:</strong> Shows the p-value for the log-rank test on the plot.</li>
+                <li><strong>conf.int:</strong> Adds confidence intervals around the survival curves.</li>
+                <li><strong>xlab / ylab:</strong> Labels for the axes.</li>
+                <li><strong>legend.title:</strong> Title of the legend.</li>
+                <li><strong>legend.labs:</strong> Labels for the groups.</li>
+                <li><strong>palette:</strong> Colors used for the survival curves.</li>
+            </ul>
+
+            <figure class="figure">
+                <img src="survival-curve_2.png" alt="Kaplan-Meier Survival Curve for Comparing Age Groups" class="survival-plot">
+                <figcaption style="margin-top: -25px;">
+                    Kaplan-Meier Survival Curve to Compare two age groups:  age &lt; 65 years (class 1) and age &ge; 65 years (class 2) against heart failure death.
+                </figcaption>
+            </figure>
+
+            <h4>R Codes for Handling Missing Values</h4>
+
+            <pre class="r-code"><code>
+
+                > # The appropriate method depends on the study design, the proportion of missing values, and the assumptions of the statistical analysis.
+
+                > # Suppose "ethnicgroup" is a categorical (factor) variable
+                > ethnicgroup <- factor(df[,"ethnicgroup"])
+                
+                > # Add a new category "9" to represent missing values
+                > levels(ethnicgroup) <- c(levels(ethnicgroup), "9")
+
+                > # Replace NA values with "9"
+                > ethnicgroup[is.na(ethnicgroup)] <- "9"
+
+                > # Other ways to handle missing values
+
+                > # Remove rows containing any missing values
+                > df_complete <- na.omit(df)
+
+                > # Keep only complete cases
+                > df_complete <- df[complete.cases(df), ]
+
+                > # Replace missing values with a constant value
+                > df$ethnicgroup[is.na(df$ethnicgroup)] <- 9
+
+                > # Replace missing values with mean for numeric variables such as age
+                > df$age[is.na(df$age)] <- mean(df$age, na.rm = TRUE)
+
+                > # Replace missing values with median for categorical variables
+                > df$income[is.na(df$ethnicgroup)] <- median(df$ethnicgroup, na.rm = TRUE)
+
+                > # Create a missing-value indicator variable
+                > df$ethnicgroup_missing <- ifelse(is.na(df$age), 1, 0)
+            </code></pre>
+
+            <h4>Non-Convergence</h4>
+
+            <ul>
+                <li>It occurs when an iterative statistical algorithm fails to reach a stable solution within a specified number of iterations.</li>
+                <li>Causes: small sample size, multicollinearity, complete or quasi separation in data, poor starting values, overly complex model, outliers or sparse data</li>
+                <li>Consequences: parameter estimates are unreliable, standard errors cannot be computed correctly, model results should not be interpreted</li>
+                <li>Solutions: increase sample size, remove or combine highly correlated variables, simplify the model, standardize variables, provide better starting values, use penalized methods</li>
+            </ul>
+        </section>
+
+        <section>
+
+            <h2 id="the-proportionality-assumption">The Proportionality Assumption</h2>
+
+            <ul>
+                <li><strong>Residuals:</strong> They measure the difference between the model’s predicted values and the actual values from the data.</li>
+                <li><strong>Residuals for Cox Model:</strong> Schoenfeld residual, Deviance residual, and Martingale residual</li>
+                <li><strong>Schoenfeld Residuals:</strong> Test whether two hazard functions are parallel or proportional.</li>
+                <li><strong>Deviance Residuals:</strong> Spot influential points.</li>
+                <li><strong>Martingale Residuals:</strong> Test whether a continuous predictor, such as age, has a linear relation with the outcome.</li>
+                <li>The assumption that hazards are proportional for a given predictor can be tested graphically and with a p-value.</li>
+                <li>Check if the relation between the variables (e.g., male and female) changes by time through the graph.</li>
+                <li>If the assumption is met then the hazard lines will be roughly parallel to each other.</li>
+                <li>Note that that's only true when they're plotted on the log scale.</li>
+                <li><strong>More Formal Way:</strong> run <code>cox.zph(fit, transform="km", global=TRUE)</code> from the "survival" package in R.</li>
+            </ul>
+
+            <h4>R Codes to Check Proportionality Assumption using Shoenfeld resuduals</h4>
+            <p style="margin-left: 25px;">⚠️ Before all R codes, load both "survival" and "survminer" packages using library().</p>
+
+            <pre class="r-code"><code>
+                > fit <- coxph(Surv(fu_time, death) ~ gender)
+                > temp <- cox.zph(fit)
+                > print(temp)
+                > plot(temp) # or ggcoxzph(temp) from the "survminer" package
+            </code></pre>
+
+            <figure class="figure">
+                <img src="proportionality-assessment.png" alt="Assessment of Proportional Hazards Assumption Using Shoenfeld Residuals" class="survival-plot">
+                <figcaption style="margin-top: -25px;">
+                    Assessment of the proportional hazards assumption for the variable <em>gender</em>
+                    using Schoenfeld residuals. The solid line represents the estimated time-varying
+                    coefficient β(t), and the dashed lines represent the 95% confidence intervals.
+                </figcaption>
+            </figure>
+
+            <table class="survival-table">
+
+            <thead>
+                <tr>
+                <th>Variable</th>
+                <th>Chi-square</th>
+                <th>df</th>
+                <th>p-value</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                <td>Gender</td>
+                <td>1.24</td>
+                <td>1</td>
+                <td>0.26</td>
+                </tr>
+
+                <tr>
+                <td><strong>Global test</strong></td>
+                <td>1.24</td>
+                <td>1</td>
+                <td>0.26</td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+            <h4>Interpretation</h4>
+
+            <ul>
+
+                <li>The proportional hazards assumption was assessed using Schoenfeld residuals.</li>
+                <li>The test for the variable <strong>gender</strong> produced a chi-square statistic of 1.24 with a p-value of 0.26.</li>
+                <li>Since the p-value is greater than 0.05, there is no evidence that the proportional hazards assumption is violated for this variable.</li>
+                <li>The global test also shows a p-value of 0.26, suggesting that the proportional hazards assumption holds for the model overall.</li>
+                <li>The Schoenfeld residual plot shows no clear systematic trend over time, which further supports the proportional hazards assumption.</li>
+                <li>The line is pretty flat, meaning that the effect of gender changes little during the follow-up period. That’s good news.</li>
+                <li>A prettier version of the above plot can be obtained from the function ggcoxzph() in the "survminer" package.</li>
+                <li>This produces graphs of the scaled Schoenfeld residuals against the transformed time for each covariate</li>
+                <li>This method does not work well for continuous predictors or categorical ones with many levels because the graph becomes too cluttered.</li>
+
+            </ul>
+
+            <h4>R Codes to Check Proportionality Assumption using Deviance resuduals</h4>
+
+                        <pre class="r-code"><code>
+                > res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
+                > ggcoxdiagnostics(res.cox, type = "deviance", linear.predictions = FALSE, ggtheme = theme_bw())
+            </code></pre>
+
+            <figure class="figure">
+                <img src="proportionality-assessment_3.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
+                <figcaption style="margin-top: -25px;">
+                    DFBETA residuals for the variable <em>age</em> from the Cox proportional hazards model.
+        Each point represents the influence of an individual observation on the estimated
+        regression coefficient for age. The blue smoothed line shows the overall trend,
+        while the dashed red line represents zero influence.
+                </figcaption>
+            </figure>
+
+            <h4>Interpretation</h4>
+
+            <ul>
+                <li>DFBETA residuals measure the influence of each individual observation on the estimated regression coefficient.</li>
+                <li>Values close to zero indicate that the observation has little influence on the coefficient estimate.</li>
+                <li>Large positive or negative values may indicate influential observations that substantially affect the model results.</li>
+                <li>In this plot, most points are centered around zero and no strong systematic trend is observed.</li>
+                <li>This suggests that no single observation has an excessively large influence on the estimated coefficient for <strong>age</strong>.</li>
+            </ul>
+
+            <h4>R Codes to Check Proportionality Assumption using DFBETA residuals</h4>
+
+            <pre class="r-code"><code>
+                > res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
+                > ggcoxdiagnostics(res.cox, type = "dfbeta", linear.predictions = FALSE, ggtheme = theme_bw())
+            </code></pre>
+
+            <figure class="figure">
+                <img src="proportionality-assessment_2.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
+                <figcaption style="margin-top: -25px;">
+                    Deviance residuals for the variable <em>age</em> from the Cox proportional hazards model. These residuals measure
+        the contribution of each observation to the model deviance and help identify outliers
+        or observations poorly predicted by the model.
+                </figcaption>
+            </figure>
+
+            <h4>Interpretation</h4>
+
+            <ul>
+                <li>Deviance residuals assess how well each observation is fitted by the Cox proportional hazards model.</li>
+                <li>Positive values correspond to individuals that <em>died too soon</em> compared with expected survival times.</li>
+                <li>Negative values correspond to individual that <em>lived too long</em> compared with expected survival times.</li>
+                <li>Observations with large positive or negative residuals may represent potential outliers or poorly fitted cases.</li>
+                <li>In this plot, most residuals are scattered around zero without a clear pattern.</li>
+                <li>The smoothed trend line remains close to zero, indicating no systematic lack of fit across observations.</li>
+                <li>Although a few points have relatively large residual values, they do not appear to form a strong pattern, suggesting that the model fits the data reasonably well.</li>
+            </ul>
+
+            <h4>R Code to Check Proportionality Assumption Using Martingale Residuals</h4>
+
+            <pre class="r-code"><code>
+                > res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
+                > ggcoxfunctional(Surv(fu_time, death_num) ~ age + log(age) + sqrt(age), data = df) # "survminer" package
+            </code></pre>
+
+            <figure class="figure">
+                <img src="proportionality-assessment_4.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
+                <figcaption style="margin-top: -25px;">
+                    Assessment of the proportional hazards assumption for the variable <em>age</em>
+                    using Martingale residuals. The plots display the Martingale residuals from a
+                    null Cox model (a model with no covariates) plotted against three different
+                    transformations of age: linear, logarithmic, and square root. The solid black line represents a
+                    lowess (locally weighted scatterplot smoothing) curve, which indicates the observed relationship
+                    between the covariate and the risk of death.
+                </figcaption>
+            </figure>
+
+            <h4>Interpretation</h4>
+
+            <ul>
+                <li>Martingale residuals are used to determine the correct functional form of a continuous variable.</li>
+                <li>Martingale residuals may present any value between minus infinity and 1) and have a mean of zero.</li>
+                <li>Martingale residuals near 1 represent individuals that <em>died too soon</em>.</li>
+                <li>Large negative values correspond to individuals that <em>lived too long</em>.</li>
+                <li>The plots should give you nice straight line if the assumption is valid.</li>
+                <li>A perfectly specified model would show a linear LOESS curve, suggesting the transformation accurately captures the covariate's effect on the hazard rate.</li>
+                <li>In all three plots, the LOESS curve shows a consistent, monotonic increase.</li>
+                <li>as age (or its transformation) increases, the observed number of deaths exceeds the expected number predicted by a null model, confirming age is a significant risk factor.</li>
+                <li>There is a visible <em>bend</em> or change in the slope of the residuals around the age of 80 (log(80) = 4.38).</li>
+                <li>This suggests that the increase in mortality risk may accelerate or change behavior in the old population.</li>
+                <li>Because the relationship is not perfectly linear across the entire age span, using a natural cubic spline or a penalized spline (pspline) might be better.</li>
+            </ul>
+
+            <h4>If the Proportionality Assumption Is Not Met</h4>
+
+            <ul>
+                <li>Add a coefficient for the statistical interaction between the variable and time.</li>
+                <li>This allows for the difference in risk by the variable to change over time.</li>
+                <li> If this interaction term is not statistically significant, then it follows that the assumption is valid.</li>
+                <li>The easiest way to do this in R is via the <em>tt</em> function (short for <em>time transform</em>).</li>
+                <li>There is also a third simple way of dealing with the problem: stratify the analysis by the variable that is causing the problems.</li>
+                <li>If the p-value is low but the hazards are proportional for most of the follow-up period, divide the survival analysis into two time periods.</li>
+                <li>Fit one model when things are fine, i.e. when the assumption is valid, and another model to cover the later follow-up period when the assumption is not valid.</li>
+                <li> If it is gender, for instance, then just fit separate models for males and females.</li>
+                <li>The drawback of this approach is that it is no longer possible to compare the effect of each gender on mortality.</li>
+            </ul>
+
+            <pre class="r-code"><code>
+                > fit <- coxph(Surv(fu_time, death) ~ gender + tt(gender)) # <em>tt</em> is the time transform function
+                > summary(fit)
+            </code></pre>
+
+            <h4>Example</h4>
+
+            <pre class="r-code"><code>
+                Call:
+                coxph(formula = Surv(fu_time, death) ~ gender + tt(gender))
+
+                n = 1000, number of events = 492
+
+                                coef exp(coef) se(coef)      z   Pr(>|z|)
+                gender2        0.6405   1.8974   0.9800   0.654    0.513
+                tt(gender)    -0.2003   0.8185   0.3182  -0.629    0.529
+
+                            exp(coef) exp(-coef) lower .95 upper .95
+                gender2         1.8974     0.5270    0.2779    12.953
+                tt(gender)      0.8185     1.2220    0.4387     1.527
+
+                Concordance = 0.497  (se = 0.197)
+                R-square = 0   (max possible = 0.997)
+
+                Likelihood ratio test = 0.49  on 2 df,  p = 0.8
+                Wald test             = 0.48  on 2 df,  p = 0.8
+                Score (logrank) test  = 0.48  on 2 df,  p = 0.8
+            </code></pre>
+
+            <table class="survival-table">
+
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Coefficient</th>
+                        <th>Hazard Ratio</th>
+                        <th>Standard Error</th>
+                        <th>p-value</th>
+                        <th>95% CI</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Gender</td>
+                        <td>0.6405</td>
+                        <td>1.90</td>
+                        <td>0.98</td>
+                        <td>0.513</td>
+                        <td>0.28 – 12.95</td>
+                    </tr>
+
+                    <tr>
+                        <td>Time interaction (tt(gender))</td>
+                        <td>-0.2003</td>
+                        <td>0.82</td>
+                        <td>0.32</td>
+                        <td>0.529</td>
+                        <td>0.44 – 1.53</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        
+            <h4>Interpretation</h4>
+
+            <ul>
+
+                <li>The hazard ratio for <strong>gender</strong> is 1.90, so individuals in gender group 2 have approximately 1.9 times the hazard compared with the reference group.</li>
+                <li>However, the p-value (0.513) is greater than 0.05, indicating that this association is not statistically significant.</li>
+                <li>The time interaction term <strong>tt(gender)</strong> evaluates whether the effect of gender changes over time.</li>
+                <li>The coefficient for the interaction term is not statistically significant (p = 0.529), suggesting no evidence that the effect of gender varies over time.</li>
+                <li>The wide confidence intervals also indicate substantial uncertainty in the estimated effects.</li>
+                <li>Overall model tests (Likelihood ratio, Wald, and Score tests) all produce p-values of approximately 0.8.</li>
+                <li>Therefore, the model does not significantly improve prediction compared with a model without these predictors.</li>
+                <li>If the coefficients have not changed much from the original model, then you now have your final model.</li>
+                <li>If you have a predictor whose coefficient has changed noticeably, then you need to find the variable(s) that you have removed that are correlated with this affected predictor.</li>
+                <li>You can do this by trial and error, so add back in one of the removed variables at a time until the affected predictor’s coefficient is back to its original value.</li>
+                <li>When that happens, you will need to keep the removed variable in the model.</li>
+
+            </ul>
+
+            <h4>Feature Selection Using Backwards Eliminatio</h4>
+
+            <ul>
+                <li><strong>Step 1:</strong> Fit the model containing all your chosen predictors, either all your a priori ones or all your available ones (if your data set is not too large).</li>
+                <li><strong>Step 2:</strong> Store all the coefficients from that model.</li>
+                <li><strong>Step 3:</strong> Remove in one go all predictors whose p-value is above the preset threshold, typically the usual 0.05.</li>
+                <li>(in a variant of this, you remove the predictor with the highest p-value and refit the model, repeating steps until all the predictors have p-values above the chosen threshold.</li>
+                <li><strong>Step 4:</strong> Compare the coefficients for the remaining predictors with their coefficients from the original model.</li>
+            </ul>
+
+        </section>
+
+        <hr class="separator">
+        
+        <footnote>
+            <h4>References</h4>
+            <ul>
+                <li><a href="https://www.coursera.org/specializations/statistical-analysis-r-public-health" target="_blank">Statistical Analysis with R for Public Health, University of Imperial College London (Coursera)</a></li>
+                <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandlifeexpectancies/methodologies/guidetocalculatingnationallifetables" target="_blank">Guide to calculating national life tables</a></li>
+                <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1065034/" target="_blank">Statistics review 12: Survival analysis</a></li>
+                <li><a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/log-rank-test" target="_blank">Science Direct</a></li>
+                <li><a href="http://data.princeton.edu/wws509/notes/c7s1.html" target="_blank">Formulae for Cox Proportional Hazards Model</a></li>
+            </ul>
+            <p style="margin-bottom:-20px;"><strong>Example Notebook:</strong> <a href="https://www.kaggle.com/code/farshadparsayan/survival-analysis-heart-failure" target="_blank">Survival Analysis of 1,000 Heart Failure Patients</a></p>
+            <p><strong>Back to the Main Page:</strong> <a href="index.html">Click</a></p>
+            <p"><strong>Creator:</strong> Farshad Parsayan</p>
+        </footnote>
+
+    </body>
+</html>
