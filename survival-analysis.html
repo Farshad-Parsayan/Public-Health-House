@@ -203,40 +203,38 @@
             </figure>
 
             <h4>R Codes for Survival Curve</h4>
-            <pre class="r-code"><code>
+            <pre class="r-code"><code>> # Install packages (run once if not already installed)
+> install.packages("survival")
 
-                > # Install packages (run once if not already installed)
-                > install.packages("survival")
+# > Load survival package
+> library(survival)
 
-                # > Load survival package
-                > library(survival)
+# Define event times
+> time <- c(t1, t2, t3, ...)
 
-                # Define event times
-                > time <- c(t1, t2, t3, ...)
+# Define survival probabilities at each time
+> survival <- c(S1, S2, S3, ...)
 
-                # Define survival probabilities at each time
-                > survival <- c(S1, S2, S3, ...)
+# Define censoring times
+> censor_time <- c(c1, c2, ...)
 
-                # Define censoring times
-                > censor_time <- c(c1, c2, ...)
+# Survival probability at censoring times
+> censor_survival <- c(Sc1, Sc2, ...)
 
-                # Survival probability at censoring times
-                > censor_survival <- c(Sc1, Sc2, ...)
+# Create Kaplan-Meier step curve
+> plot(time, survival,
++      type = "s",
++      lwd = 2,
++      xlab = "Time",
++      ylab = "Survival probability",
++      main = "Kaplan-Meier Survival Curve",
++      ylim = c(0,1))
 
-                # Create Kaplan-Meier step curve
-                > plot(time, survival,
-                +      type = "s",
-                +      lwd = 2,
-                +      xlab = "Time",
-                +      ylab = "Survival probability",
-                +      main = "Kaplan-Meier Survival Curve",
-                +      ylim = c(0,1))
+# Add event points
+> points(time, survival, pch = 16)
 
-                # Add event points
-                > points(time, survival, pch = 16)
-
-                # Add censor marks
-                > points(censor_time, censor_survival, pch = 4, cex = 1.5, col = "red")
+# Add censor marks
+> points(censor_time, censor_survival, pch = 4, cex = 1.5, col = "red")
             </code></pre>
         </section>
         <section>
@@ -250,57 +248,54 @@
 
             <h4>R Codes for Log-Rank Test</h4>
 
-            <pre class="r-code"><code>
-                
-                > # Load survival package
-                > library(survival)
+            <pre class="r-code"><code>> # Load survival package
+> library(survival)
 
-                > # import the dataset
-                > df <- read.csv("dataset.csv", header = TRUE, sep = ",")
+> # import the dataset
+> df <- read.csv("dataset.csv", header = TRUE, sep = ",")
 
-                > # Example data: Time to event (days) and status
-                > # time: follow-up time
-                > # status: event indicator (1 = event occurred, 0 = censored)
-                
-                > time <- df$time
-                > status <- df$status
+> # Example data: Time to event (days) and status
+> # time: follow-up time
+> # status: event indicator (1 = event occurred, 0 = censored)
 
-                > # Group variable (e.g., treatment vs control)
-                > group <- c("A","A","A","B","B","B","B","B")
+> time <- df$time
+> status <- df$status
 
-                > # Create a survival object
-                > surv_obj <- Surv(time, status)
+> # Group variable (e.g., treatment vs control)
+> group <- c("A","A","A","B","B","B","B","B")
 
-                > # Fit survival curves by group
-                > fit <- survfit(surv_obj ~ group)
+> # Create a survival object
+> surv_obj <- Surv(time, status)
 
-                > # Plot the survival curves
-                > plot(fit,
-                +      col = c("blue","red"),
-                +      lty = 1:2,
-                +      xlab = "Time (days)",
-                +      ylab = "Survival probability",
-                +      main = "Kaplan-Meier Curves by Group")
-                > legend("topright", legend = levels(factor(group)), col = c("blue","red"), lty = 1:2)
+> # Fit survival curves by group
+> fit <- survfit(surv_obj ~ group)
 
-                > # Run log-rank test to compare groups
-                > # You can add rho = 0 for standard log-rank, or rho = 1 for Gehan-Wilcoxon test
-                > logrank_test <- survdiff(surv_obj ~ group)
+> # Plot the survival curves
+> plot(fit,
++      col = c("blue","red"),
++      lty = 1:2,
++      xlab = "Time (days)",
++      ylab = "Survival probability",
++      main = "Kaplan-Meier Curves by Group")
+> legend("topright", legend = levels(factor(group)), col = c("blue","red"), lty = 1:2)
 
-                > # View test result
-                > logrank_test
+> # Run log-rank test to compare groups
+> # You can add rho = 0 for standard log-rank, or rho = 1 for Gehan-Wilcoxon test
+> logrank_test <- survdiff(surv_obj ~ group)
+
+> # View test result
+> logrank_test
             </code></pre>
 
             <h4>Example</h4>
-            <pre class="r-code"><code>
-                > # Log-rank test comparing age groups
-                > survdiff(formula = Surv(fu_time, death_num) ~ age_65plus, data = df)
+            <pre class="r-code"><code>> # Log-rank test comparing age groups
+> survdiff(formula = Surv(fu_time, death_num) ~ age_65plus, data = df)
 
-                                N Observed Expected (O-E)^2/E (O-E)^2/V
-                age_65plus=<65 115       18       67     35.85      41.7
-                age_65plus=≥65 885      474      425      5.65      41.7
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+age_65plus=<65 115       18       67     35.85      41.7
+age_65plus=≥65 885      474      425      5.65      41.7
 
-                Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
+Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
             </code></pre>
 
             <h4>Interpretation</h4>
@@ -345,89 +340,84 @@
 
             <h4>R Codes to Describe the Data</h4>
 
-            <pre class="r-code"><code>
-                > # import the dataset
-                > df <- read.csv("dataset.csv", header = TRUE, sep = ",")
+            <pre class="r-code"><code>> # import the dataset
+> df <- read.csv("dataset.csv", header = TRUE, sep = ",")
 
-                > # Use summary() for numeric variabels
-                > summary(df$age)
+> # Use summary() for numeric variabels
+> summary(df$age)
 
-                > # Use table() for categorical variables
-                > t <- table(df$gender, exclude = NULL)
+> # Use table() for categorical variables
+> t <- table(df$gender, exclude = NULL)
 
-                > # Add the total column
-                > addmargins(t)
+> # Add the total column
+> addmargins(t)
 
-                > # Get the percentages rounded to one decimal point
-                > round(100*prop.table(t),digits=1)
+> # Get the percentages rounded to one decimal point
+> round(100*prop.table(t),digits=1)
 
-                > # Change the reference categories (ref) if Required
-                > df$gender <- relevel(df$gender, ref = 2)
+> # Change the reference categories (ref) if Required
+> df$gender <- relevel(df$gender, ref = 2)
             </code></pre>
 
             <h4>R Codes for Cox Regression</h4>
 
-            <pre class="r-code"><code>
+            <pre class="r-code"><code>> # Install packages (run once if not already installed)
+> install.packages("survival")
+> install.packages("survminer")
 
-                > # Install packages (run once if not already installed)
-                > install.packages("survival")
-                > install.packages("survminer")
+> # Load survival package
+> library(survival)
 
-                > # Load survival package
-                > library(survival)
+> # Example dataset variables
+> # time: follow-up time
+> # status: event indicator (1 = event occurred, 0 = censored)
+> # predictor1, predictor2: explanatory variables
 
-                > # Example dataset variables
-                > # time: follow-up time
-                > # status: event indicator (1 = event occurred, 0 = censored)
-                > # predictor1, predictor2: explanatory variables
+> time <- df$time
+> status <- df$status
 
-                > time <- df$time
-                > status <- df$status
+> # Create survival object
+> surv_obj <- Surv(time, status)
 
-                > # Create survival object
-                > surv_obj <- Surv(time, status)
+> # Fit Cox proportional hazards model
+> cox_model <- coxph( formula = surv_obj ~ predictor1 + predictor2, data = df)
 
-                > # Fit Cox proportional hazards model
-                > cox_model <- coxph( formula = surv_obj ~ predictor1 + predictor2, data = df)
+> # View model summary
+> summary(cox_model)
 
-                > # View model summary
-                > summary(cox_model)
+> # Extract hazard ratios
+> exp(coef(cox_model))
 
-                > # Extract hazard ratios
-                > exp(coef(cox_model))
+> # Confidence intervals for hazard ratios
+> exp(confint(cox_model))
 
-                > # Confidence intervals for hazard ratios
-                > exp(confint(cox_model))
+> # Test proportional hazards assumption
+> ph_test <- cox.zph(cox_model)
+> ph_test
 
-                > # Test proportional hazards assumption
-                > ph_test <- cox.zph(cox_model)
-                > ph_test
-
-                > # Plot proportional hazards test
-                > plot(ph_test)
-
+> # Plot proportional hazards test
+> plot(ph_test)
             </code></pre>
 
             <h4>Example</h4>
 
-            <pre class="r-code"><code>
-                > coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +
-                +       copd + hypertension, data = df)
+            <pre class="r-code"><code>> coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +
++       copd + hypertension, data = df)
 
-                n = 1000, number of events = 492
+n = 1000, number of events = 492
 
-                                HR    95% CI           p
-                age_65plus≥65    4.15  (2.59 – 6.65)   3.35e-09 ***
-                diabetes         0.90  (0.73 – 1.10)   0.292
-                copd             1.08  (0.88 – 1.32)   0.451
-                hypertension     0.96  (0.80 – 1.16)   0.704
+                HR    95% CI           p
+age_65plus≥65    4.15  (2.59 – 6.65)   3.35e-09 ***
+diabetes         0.90  (0.73 – 1.10)   0.292
+copd             1.08  (0.88 – 1.32)   0.451
+hypertension     0.96  (0.80 – 1.16)   0.704
 
-                Model tests:
-                Likelihood ratio test = 58.26  on 4 df, p = 7e-12
-                Wald test             = 37.17  on 4 df, p = 2e-07
-                Score (log-rank) test = 43.55  on 4 df, p = 8e-09
+Model tests:
+Likelihood ratio test = 58.26  on 4 df, p = 7e-12
+Wald test             = 37.17  on 4 df, p = 2e-07
+Score (log-rank) test = 43.55  on 4 df, p = 8e-09
 
-                Concordance = 0.572
+Concordance = 0.572
             </code></pre>
 
             <h4>Definitions</h4>
@@ -458,33 +448,29 @@
 
             <h4>R Codes for Kaplan-Meier Plot Using Survminer</h4>
 
-            <pre class="r-code"><code>
+            <pre class="r-code"><code>> # Load survminer package
+> library(survminer)
 
-                > # Load survminer package
-                > library(survminer)
+> # Fit Kaplan-Meier survival curves
+> fit <- survfit(surv_object ~ group, data = df)
 
-                > # Fit Kaplan-Meier survival curves
-                > fit <- survfit(surv_object ~ group, data = df)
+> # Plot survival curves using survminer
+> ggsurvplot(fit,
++            data = df,
++            risk.table = TRUE,
++            pval = TRUE,
++            conf.int = TRUE,
++            xlab = "Time",
++            ylab = "Survival probability",
++            legend.title = "Group",
++            legend.labs = c("Group 1", "Group 2"),
++            palette = c("blue", "red"))
 
-                > # Plot survival curves using survminer
-                > ggsurvplot(fit,
-                +            data = df,
-                +            risk.table = TRUE,
-                +            pval = TRUE,
-                +            conf.int = TRUE,
-                +            xlab = "Time",
-                +            ylab = "Survival probability",
-                +            legend.title = "Group",
-                +            legend.labs = c("Group 1", "Group 2"),
-                +            palette = c("blue", "red"))
+> # Alternative plot with "ggplot2" package
+> autoplot(fit) + theme_bw() 
 
-                > # Alternative plot with "ggplot2" package
-                > autoplot(fit) + theme_bw() 
-
-                > # Another Way to plot
-                > plot(fit)
-
-            
+> # Another Way to plot
+> plot(fit)
             </code></pre>
 
             <ul>
@@ -506,38 +492,36 @@
 
             <h4>R Codes for Handling Missing Values</h4>
 
-            <pre class="r-code"><code>
+            <pre class="r-code"><code>> # The appropriate method depends on the study design, the proportion of missing values, and the assumptions of the statistical analysis.
 
-                > # The appropriate method depends on the study design, the proportion of missing values, and the assumptions of the statistical analysis.
+> # Suppose "ethnicgroup" is a categorical (factor) variable
+> ethnicgroup <- factor(df[,"ethnicgroup"])
 
-                > # Suppose "ethnicgroup" is a categorical (factor) variable
-                > ethnicgroup <- factor(df[,"ethnicgroup"])
-                
-                > # Add a new category "9" to represent missing values
-                > levels(ethnicgroup) <- c(levels(ethnicgroup), "9")
+> # Add a new category "9" to represent missing values
+> levels(ethnicgroup) <- c(levels(ethnicgroup), "9")
 
-                > # Replace NA values with "9"
-                > ethnicgroup[is.na(ethnicgroup)] <- "9"
+> # Replace NA values with "9"
+> ethnicgroup[is.na(ethnicgroup)] <- "9"
 
-                > # Other ways to handle missing values
+> # Other ways to handle missing values
 
-                > # Remove rows containing any missing values
-                > df_complete <- na.omit(df)
+> # Remove rows containing any missing values
+> df_complete <- na.omit(df)
 
-                > # Keep only complete cases
-                > df_complete <- df[complete.cases(df), ]
+> # Keep only complete cases
+> df_complete <- df[complete.cases(df), ]
 
-                > # Replace missing values with a constant value
-                > df$ethnicgroup[is.na(df$ethnicgroup)] <- 9
+> # Replace missing values with a constant value
+> df$ethnicgroup[is.na(df$ethnicgroup)] <- 9
 
-                > # Replace missing values with mean for numeric variables such as age
-                > df$age[is.na(df$age)] <- mean(df$age, na.rm = TRUE)
+> # Replace missing values with mean for numeric variables such as age
+> df$age[is.na(df$age)] <- mean(df$age, na.rm = TRUE)
 
-                > # Replace missing values with median for categorical variables
-                > df$income[is.na(df$ethnicgroup)] <- median(df$ethnicgroup, na.rm = TRUE)
+> # Replace missing values with median for categorical variables
+> df$income[is.na(df$ethnicgroup)] <- median(df$ethnicgroup, na.rm = TRUE)
 
-                > # Create a missing-value indicator variable
-                > df$ethnicgroup_missing <- ifelse(is.na(df$age), 1, 0)
+> # Create a missing-value indicator variable
+> df$ethnicgroup_missing <- ifelse(is.na(df$age), 1, 0)
             </code></pre>
 
             <h4>Non-Convergence</h4>
@@ -570,11 +554,10 @@
             <h4>R Codes to Check Proportionality Assumption using Shoenfeld resuduals</h4>
             <p style="text-align: center;">⚠️ Before all R codes, load both "survival" and "survminer" packages using library().</p>
 
-            <pre class="r-code"><code>
-                > fit <- coxph(Surv(fu_time, death) ~ gender)
-                > temp <- cox.zph(fit)
-                > print(temp)
-                > plot(temp) # or ggcoxzph(temp) from the "survminer" package
+            <pre class="r-code"><code>> fit <- coxph(Surv(fu_time, death) ~ gender)
+> temp <- cox.zph(fit)
+> print(temp)
+> plot(temp) # or ggcoxzph(temp) from the "survminer" package
             </code></pre>
 
             <figure class="figure">
@@ -639,9 +622,8 @@
 
             <h4>R Codes to Check Proportionality Assumption using Deviance resuduals</h4>
 
-                        <pre class="r-code"><code>
-                > res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
-                > ggcoxdiagnostics(res.cox, type = "deviance", linear.predictions = FALSE, ggtheme = theme_bw())
+            <pre class="r-code"><code>> res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
+> ggcoxdiagnostics(res.cox, type = "deviance", linear.predictions = FALSE, ggtheme = theme_bw())
             </code></pre>
 
             <figure class="figure">
@@ -666,9 +648,8 @@
 
             <h4>R Codes to Check Proportionality Assumption using DFBETA residuals</h4>
 
-            <pre class="r-code"><code>
-                > res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
-                > ggcoxdiagnostics(res.cox, type = "dfbeta", linear.predictions = FALSE, ggtheme = theme_bw())
+            <pre class="r-code"><code>> res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
+> ggcoxdiagnostics(res.cox, type = "dfbeta", linear.predictions = FALSE, ggtheme = theme_bw())
             </code></pre>
 
             <figure class="figure">
@@ -694,9 +675,8 @@
 
             <h4>R Code to Check Proportionality Assumption Using Martingale Residuals</h4>
 
-            <pre class="r-code"><code>
-                > res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
-                > ggcoxfunctional(Surv(fu_time, death_num) ~ age + log(age) + sqrt(age), data = df) # "survminer" package
+            <pre class="r-code"><code>> res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
+> ggcoxfunctional(Surv(fu_time, death_num) ~ age + log(age) + sqrt(age), data = df) # "survminer" package
             </code></pre>
 
             <figure class="figure">
@@ -741,33 +721,31 @@
                 <li>The drawback of this approach is that it is no longer possible to compare the effect of each gender on mortality.</li>
             </ul>
 
-            <pre class="r-code"><code>
-                > fit <- coxph(Surv(fu_time, death) ~ gender + tt(gender)) # <em>tt</em> is the time transform function
+            <pre class="r-code"><code>> fit <- coxph(Surv(fu_time, death) ~ gender + tt(gender)) # <em>tt</em> is the time transform function
                 > summary(fit)
             </code></pre>
 
             <h4>Example</h4>
 
-            <pre class="r-code"><code>
-                Call:
-                coxph(formula = Surv(fu_time, death) ~ gender + tt(gender))
+            <pre class="r-code"><code>Call:
+coxph(formula = Surv(fu_time, death) ~ gender + tt(gender))
 
-                n = 1000, number of events = 492
+n = 1000, number of events = 492
 
-                                coef exp(coef) se(coef)      z   Pr(>|z|)
-                gender2        0.6405   1.8974   0.9800   0.654    0.513
-                tt(gender)    -0.2003   0.8185   0.3182  -0.629    0.529
+                coef exp(coef) se(coef)      z   Pr(>|z|)
+gender2        0.6405   1.8974   0.9800   0.654    0.513
+tt(gender)    -0.2003   0.8185   0.3182  -0.629    0.529
 
-                            exp(coef) exp(-coef) lower .95 upper .95
-                gender2         1.8974     0.5270    0.2779    12.953
-                tt(gender)      0.8185     1.2220    0.4387     1.527
+            exp(coef) exp(-coef) lower .95 upper .95
+gender2         1.8974     0.5270    0.2779    12.953
+tt(gender)      0.8185     1.2220    0.4387     1.527
 
-                Concordance = 0.497  (se = 0.197)
-                R-square = 0   (max possible = 0.997)
+Concordance = 0.497  (se = 0.197)
+R-square = 0   (max possible = 0.997)
 
-                Likelihood ratio test = 0.49  on 2 df,  p = 0.8
-                Wald test             = 0.48  on 2 df,  p = 0.8
-                Score (logrank) test  = 0.48  on 2 df,  p = 0.8
+Likelihood ratio test = 0.49  on 2 df,  p = 0.8
+Wald test             = 0.48  on 2 df,  p = 0.8
+Score (logrank) test  = 0.48  on 2 df,  p = 0.8
             </code></pre>
 
             <div class="table-container">
@@ -856,6 +834,39 @@
             <p>Back to <a href="index.html">Homepage</a></p>
             <p"><strong>Creator:</strong> Farshad Parsayan</p>
         </footnote>
+
+        <script>
+            document.querySelectorAll('ol li a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        const targetPosition = targetElement.offsetTop;
+                        const startPosition = window.pageYOffset;
+                        const distance = targetPosition - startPosition;
+                        const duration = 1500; // This is the speed in milliseconds (1.5 seconds)
+                        let start = null;
+
+                        window.requestAnimationFrame(function step(timestamp) {
+                            if (!start) start = timestamp;
+                            const progress = timestamp - start;
+                            const run = ease(progress, startPosition, distance, duration);
+                            window.scrollTo(0, run);
+                            if (progress < duration) window.requestAnimationFrame(step);
+                        });
+                    }
+                });
+            });
+
+            function ease(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            }
+        </script>
 
     </body>
 </html>
