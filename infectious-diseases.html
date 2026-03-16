@@ -234,39 +234,6 @@
       </ul>
     </section>
 
-      <script>
-          document.querySelectorAll('ol li a[href^="#"]').forEach(anchor => {
-              anchor.addEventListener('click', function (e) {
-                  e.preventDefault();
-                  const targetId = this.getAttribute('href');
-                  const targetElement = document.querySelector(targetId);
-                  
-                  if (targetElement) {
-                      const targetPosition = targetElement.offsetTop;
-                      const startPosition = window.pageYOffset;
-                      const distance = targetPosition - startPosition;
-                      const duration = 1500; // This is the speed in milliseconds (1.5 seconds)
-                      let start = null;
-
-                      window.requestAnimationFrame(function step(timestamp) {
-                          if (!start) start = timestamp;
-                          const progress = timestamp - start;
-                          const run = ease(progress, startPosition, distance, duration);
-                          window.scrollTo(0, run);
-                          if (progress < duration) window.requestAnimationFrame(step);
-                      });
-                  }
-              });
-          });
-
-          function ease(t, b, c, d) {
-              t /= d / 2;
-              if (t < 1) return c / 2 * t * t + b;
-              t--;
-              return -c / 2 * (t * (t - 2) - 1) + b;
-          }
-      </script>
-
   </body>
   <hr class="separator">
 
