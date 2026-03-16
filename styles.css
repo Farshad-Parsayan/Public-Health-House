@@ -3,8 +3,10 @@ body {
     background-color: #f4e7d3;
     color: #333;
     line-height: 1.6;
-    margin: 100;
+    margin: 0;
     padding: 0 50px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 html {
@@ -124,13 +126,18 @@ footer {
     margin-top: 20px;
 }
 
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .survival-table {
     border-collapse: collapse;
     width: 100%;
     max-width: 800px;
     margin: 20px auto;
     background-color: #f9f2e7;
-    overflow-x: auto;
 }
 
 .survival-table th,
@@ -187,16 +194,17 @@ figcaption {
     display: block;
     background-color: #f4efe6;
     border-left: 2px solid #8b5e3c;
-    padding: 4px 6px;
-    margin: 15px auto;
+    padding: 10px 12px;
+    margin: 15px 0;
     font-family: monospace;
     font-size: 14px;
     line-height: 1.4;
     border-radius: 4px;
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
-    width: 80%;
-    max-width: 80%;
     white-space: pre;
+    box-sizing: border-box;
 }
 
 .r-code code {
@@ -245,8 +253,8 @@ figcaption {
 
     .r-code {
         font-size: 13px;
-        padding: 4px 6px;
-        margin: 12px auto;
+        padding: 8px 10px;
+        margin: 12px 0;
     }
 
     .figure img {
