@@ -23,6 +23,7 @@ h1, h2 {
     width: 90%;
     max-width: 800px;
     word-wrap: break-word;
+    scroll-margin-top: 40px;
 }
 
 h4 {
@@ -262,6 +263,15 @@ figcaption {
         padding: 0 15px;
     }
 
+    html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 40px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        scroll-margin-top: 40px;
+    }
+
     h1, h2 {
         width: 100%;
         box-sizing: border-box;
@@ -291,6 +301,17 @@ figcaption {
 
     footer {
         margin-left: 10px;
+    }
+
+    a:active,
+    a:focus {
+        outline: none;
+        color: inherit;
+        background-color: transparent;
+    }
+
+    a {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
 
     .survival-table th,
