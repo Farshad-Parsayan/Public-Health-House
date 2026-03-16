@@ -93,7 +93,7 @@ ol li a {
     text-decoration: none;
     color: #333;
     font-weight: 500;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.8s ease, transform 0.2s ease;
 }
 
 ol li a:visited {
@@ -107,6 +107,8 @@ ol li a:hover {
 
 ol li a:active {
     background-color: #e6d5bb;
+    transition: background-color 0s;
+    transform: scale(0.98);
 }
 
 ol li a:focus {
@@ -116,7 +118,7 @@ ol li a:focus {
 
 .main-sections {
     list-style: none;
-    padding-left: 0;
+    padding: 0;
     text-align: center;
 }
 
@@ -217,6 +219,8 @@ figcaption {
     line-height: 1.5;
     border-radius: 6px;
     width: 100%;
+    box-sizing: border-box;
+    display: block;
     max-width: 800px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -226,7 +230,9 @@ figcaption {
 .r-code code {
     display: block;
     white-space: pre;
-    min-width: 0;
+    word-wrap: normal;
+    overflow-wrap: normal;
+    min-width: 100%;
 }
 
 .scroll-top {
@@ -303,5 +309,12 @@ figcaption {
 
     figcaption {
         font-size: 12px;
+    }
+}
+
+@media (hover: hover) {
+    ol li a:hover {
+        background-color: #efe3cf;
+        transform: translateX(4px);
     }
 }
