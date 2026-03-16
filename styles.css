@@ -93,12 +93,25 @@ ol li a {
     text-decoration: none;
     color: #333;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+ol li a:visited {
+    color: #333;
 }
 
 ol li a:hover {
     background-color: #efe3cf;
     transform: translateX(4px);
+}
+
+ol li a:active {
+    background-color: #e6d5bb;
+}
+
+ol li a:focus {
+    outline: none;
+    background-color: #f9f2e7;
 }
 
 .main-sections {
@@ -192,6 +205,7 @@ figcaption {
 }
 
 .r-code {
+    color: #222;
     background-color: #f8f6f1;
     border: 1px solid #d8d2c8;
     border-left: 4px solid #8b5e3c;
@@ -205,13 +219,14 @@ figcaption {
     width: 100%;
     max-width: 800px;
     overflow-x: auto;
+    overflow-y: hidden;
     box-sizing: border-box;
 }
 
 .r-code code {
     display: block;
     white-space: pre;
-    margin: 0;
+    min-width: 0;
 }
 
 .scroll-top {
@@ -279,6 +294,7 @@ figcaption {
         font-size: 13px;
         padding: 7px 10px;
         margin: 15px auto;
+        max-width: 100%;
     }
 
     .figure img {
