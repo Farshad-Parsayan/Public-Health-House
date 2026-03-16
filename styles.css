@@ -192,25 +192,41 @@ figcaption {
 }
 
 .r-code {
-    display: block;
-    background-color: #f4efe6;
-    border-left: 2px solid #8b5e3c;
-    padding: 10px 12px;
-    margin: 15px 0;
-    font-family: monospace;
+    background-color: #f6f4ef;
+    border: 1px solid #d8d2c8;
+    border-left: 4px solid #8b5e3c;
+    padding: 8px 10px;
+    margin: 18px 0;
+    font-family: Consolas, "Courier New", monospace;
     font-size: 14px;
-    line-height: 1.4;
-    border-radius: 4px;
-    width: 100%;
-    max-width: 100%;
+    line-height: 1.45;
+    border-radius: 5px;
     overflow-x: auto;
     white-space: pre;
-    box-sizing: border-box;
 }
 
 .r-code code {
-    display: inline-block;
-    min-width: 100%;
+    display: block;
+    margin-left: -8em;
+    padding-left: 8em;
+}
+
+.scroll-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #8b5e3c;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.scroll-top:hover {
+    background-color: #6f482f;
 }
 
 @media (max-width: 768px) {
@@ -255,14 +271,11 @@ figcaption {
         width: 100%;
         padding: 4px;
     }
+
     .r-code {
         font-size: 13px;
         padding: 8px 10px;
         margin: 12px 0;
-    }
-
-    .r-code code {
-        min-width: 100%;
     }
 
     .figure img {
