@@ -192,23 +192,26 @@ figcaption {
 }
 
 .r-code {
-    background-color: #f6f4ef;
+    background-color: #f8f6f1;
     border: 1px solid #d8d2c8;
     border-left: 4px solid #8b5e3c;
-    padding: 8px 10px;
-    margin: 18px 0;
+    border-right: 4px solid #8b5e3c;
+    padding: 8px 12px;
+    margin: 18px auto;
     font-family: Consolas, "Courier New", monospace;
     font-size: 14px;
-    line-height: 1.45;
-    border-radius: 5px;
+    line-height: 1.5;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 800px;
     overflow-x: auto;
-    white-space: pre;
+    box-sizing: border-box;
 }
 
 .r-code code {
     display: block;
-    margin-left: -8em;
-    padding-left: 8em;
+    white-space: pre;
+    margin: 0;
 }
 
 .scroll-top {
@@ -274,8 +277,8 @@ figcaption {
 
     .r-code {
         font-size: 13px;
-        padding: 8px 10px;
-        margin: 12px 0;
+        padding: 7px 10px;
+        margin: 15px auto;
     }
 
     .figure img {
