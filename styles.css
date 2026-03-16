@@ -384,11 +384,4 @@ figcaption {
         min-width: 100%;
         white-space: pre; 
         }
-    }
-
-@media (hover: hover) {
-    ol li a:hover {
-        background-color: #efe3cf;
-        transform: translateX(4px);
-    }
 }
