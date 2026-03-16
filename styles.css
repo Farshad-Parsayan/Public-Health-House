@@ -246,11 +246,11 @@ figcaption {
 
     html, body {
         scroll-behavior: smooth;
-        scroll-padding-top: 40px;
+        scroll-padding-top: 60px;
     }
 
     h2 {
-        scroll-margin-top: 40px;
+        scroll-margin-top: 60px;
     }
 
     h1, h2 {
