@@ -51,8 +51,8 @@ h4 {
 
 .logo {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 25px;
+    right: 25px;
     width: 80px;
     height: auto;
     border-radius: 8px;
@@ -357,8 +357,7 @@ figcaption {
 
     .logo {
         width: 50px;
-        top: auto;
-        bottom: 15px;
+        bottom: 70px;
         right: 15px;
         opacity: 0.85;
     }
