@@ -49,6 +49,34 @@ h4 {
     scroll-margin-top: 40px;
 }
 
+.logo {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 100px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    z-index: 9999;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.logo img {
+    width: 120px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
 .about {
     text-align: center;
     margin-top: 5px;
@@ -326,6 +354,11 @@ figcaption {
         margin-left: 10px;
     }
 
+    .logo {
+        width: 45px;
+        top: 10px;
+        right: 10px;
+    }
     .scroll-top {
         position: fixed;
         bottom: 25px;
