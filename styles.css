@@ -220,6 +220,15 @@ figcaption {
     min-width: 100%;
 }
 
+.r-code code span::before {
+    content: "> ";
+    color: #8b5e3c;
+}
+
+.r-code code span.cont::before {
+    content: "+ ";
+}
+
 .scroll-top {
     position: fixed;
     bottom: 25px;

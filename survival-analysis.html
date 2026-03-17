@@ -203,39 +203,50 @@ log-rank test, and Cox proportional hazards model.">
             </figure>
 
             <h4>R Codes for Survival Curve</h4>
-            <pre class="r-code"><code>> # Install packages (run once if not already installed)
-> install.packages("survival")
 
-# > Load survival package
-> library(survival)
+<pre class="r-code"><code><span># Install packages (run once if not already installed)</span>
+<span>install.packages("survival")</span>
 
-# Define event times
-> time <- c(t1, t2, t3, ...)
+<span># Load survival package</span>
+<span>library(survival)</span>
 
-# Define survival probabilities at each time
-> survival <- c(S1, S2, S3, ...)
+<span># Example dataset: time-to-event and status (1 = event, 0 = censored)</span>
+<span>time_raw <- c(5, 8, 12, 15, 20, 22, 25, 30)</span>
+<span>status <- c(1, 1, 0, 1, 0, 1, 1, 0)</span>
 
-# Define censoring times
-> censor_time <- c(c1, c2, ...)
+<span># Create survival object</span>
+<span>surv_obj <- Surv(time = time_raw, event = status)</span>
 
-# Survival probability at censoring times
-> censor_survival <- c(Sc1, Sc2, ...)
+<span># Fit Kaplan-Meier model</span>
+<span>km_fit <- survfit(surv_obj ~ 1)</span>
 
-# Create Kaplan-Meier step curve
-> plot(time, survival,
-+      type = "s",
-+      lwd = 2,
-+      xlab = "Time",
-+      ylab = "Survival probability",
-+      main = "Kaplan-Meier Survival Curve",
-+      ylim = c(0,1))
+<span># Extract event times and survival probabilities</span>
+<span>time <- km_fit$time</span>
+<span>survival <- km_fit$surv</span>
 
-# Add event points
-> points(time, survival, pch = 16)
+<span># Extract censoring times</span>
+<span>censor_idx <- which(km_fit$n.censor > 0)</span>
+<span>censor_time <- time[censor_idx]</span>
 
-# Add censor marks
-> points(censor_time, censor_survival, pch = 4, cex = 1.5, col = "red")
-            </code></pre>
+<span># Survival probability at censoring times</span>
+<span>censor_survival <- survival[censor_idx]</span>
+
+<span># Create Kaplan-Meier step curve</span>
+<span>plot(time, survival,</span>
+<span class="cont">    type = "s",</span>
+<span class="cont">    lwd = 2,</span>
+<span class="cont">    xlab = "Time",</span>
+<span class="cont">    ylab = "Survival probability",</span>
+<span class="cont">    main = "Kaplan-Meier Survival Curve",</span>
+<span class="cont">    ylim = c(0,1))</span>
+
+<span># Add event points</span>
+<span>points(time, survival, pch = 16)</span>
+
+<span># Add censor marks</span>
+<span>points(censor_time, censor_survival, pch = 4, cex = 1.5, col = "red")</span>
+</code></pre>
+
         </section>
         <section>
             <h2 id="log-rank-test">Log-Rank Test</h2>
@@ -247,49 +258,55 @@ log-rank test, and Cox proportional hazards model.">
             </ul>
 
             <h4>R Codes for Log-Rank Test</h4>
+<pre class="r-code"><code><span># Load survival package</span>
+<span>library(survival)</span>
 
-            <pre class="r-code"><code>> # Load survival package
-> library(survival)
+<span># Import the dataset</span>
+<span>df <- read.csv("dataset.csv", header = TRUE, sep = ",")</span>
 
-> # import the dataset
-> df <- read.csv("dataset.csv", header = TRUE, sep = ",")
+<span># Example data:</span>
+<span># time: follow-up time</span>
+<span># status: event indicator (1 = event, 0 = censored)</span>
+<span># group: grouping variable (e.g., treatment vs control)</span>
 
-> # Example data: Time to event (days) and status
-> # time: follow-up time
-> # status: event indicator (1 = event occurred, 0 = censored)
+<span>time <- df$time</span>
+<span>status <- df$status</span>
+<span>group <- df$group</span>
 
-> time <- df$time
-> status <- df$status
+<span># Create a survival object</span>
+<span>surv_obj <- Surv(time, status)</span>
 
-> # Group variable (e.g., treatment vs control)
-> group <- c("A","A","A","B","B","B","B","B")
+<span># Fit Kaplan-Meier curves by group</span>
+<span>fit <- survfit(surv_obj ~ group)</span>
 
-> # Create a survival object
-> surv_obj <- Surv(time, status)
+<span># Plot the survival curves</span>
+<span>plot(fit,</span>
+<span class="cont">    col = c("blue","red"),</span>
+<span class="cont">    lty = 1:2,</span>
+<span class="cont">    xlab = "Time (days)",</span>
+<span class="cont">    ylab = "Survival probability",</span>
+<span class="cont">    main = "Kaplan-Meier Curves by Group")</span>
 
-> # Fit survival curves by group
-> fit <- survfit(surv_obj ~ group)
+<span># Add legend</span>
+<span>legend("topright", legend = levels(factor(group)),</span>
+<span class="cont">       col = c("blue","red"), lty = 1:2)</span>
 
-> # Plot the survival curves
-> plot(fit,
-+      col = c("blue","red"),
-+      lty = 1:2,
-+      xlab = "Time (days)",
-+      ylab = "Survival probability",
-+      main = "Kaplan-Meier Curves by Group")
-> legend("topright", legend = levels(factor(group)), col = c("blue","red"), lty = 1:2)
+<span># Run log-rank test to compare groups</span>
+<span># rho = 0 (default) gives the standard log-rank test</span>
+<span>logrank_test <- survdiff(surv_obj ~ group)</span>
 
-> # Run log-rank test to compare groups
-> # You can add rho = 0 for standard log-rank, or rho = 1 for Gehan-Wilcoxon test
-> logrank_test <- survdiff(surv_obj ~ group)
+<span># View test result</span>
+<span>logrank_test</span>
 
-> # View test result
-> logrank_test
-            </code></pre>
+<span># Optional: calculate p-value</span>
+<span>p_value <- 1 - pchisq(logrank_test$chisq, df = length(logrank_test$n) - 1)</span>
+<span>p_value</span>
+</code></pre>
 
             <h4>Example</h4>
-            <pre class="r-code"><code>> # Log-rank test comparing age groups
-> survdiff(formula = Surv(fu_time, death_num) ~ age_65plus, data = df)
+
+            <pre class="r-code"><code><span># Log-rank test comparing age groups</span>
+<span>survdiff(formula = Surv(fu_time, death_num) ~ age_65plus, data = df)</span>
 
                 N Observed Expected (O-E)^2/E (O-E)^2/V
 age_65plus=<65 115       18       67     35.85      41.7
@@ -340,69 +357,65 @@ Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
 
             <h4>R Codes to Describe the Data</h4>
 
-            <pre class="r-code"><code>> # import the dataset
-> df <- read.csv("dataset.csv", header = TRUE, sep = ",")
+<pre class="r-code"><code><span># Import the dataset</span>
+<span>df <- read.csv("dataset.csv", header = TRUE, sep = ",")</span>
 
-> # Use summary() for numeric variabels
-> summary(df$age)
+<span># Explore numeric variables</span>
+<span>summary(df$age)</span>
 
-> # Use table() for categorical variables
-> t <- table(df$gender, exclude = NULL)
+<span># Explore categorical variables</span>
+<span>t <- table(df$gender, exclude = NULL)</span>
+<span>addmargins(t)  # Add totals</span>
+<span>round(100 * prop.table(t), digits = 1)  # Percentages</span>
 
-> # Add the total column
-> addmargins(t)
+<span># Change reference category if needed (e.g., gender reference)</span>
+<span>df$gender <- relevel(df$gender, ref = "Male")</span>
 
-> # Get the percentages rounded to one decimal point
-> round(100*prop.table(t),digits=1)
+<span># --- R Codes for Cox Regression ---</span>
 
-> # Change the reference categories (ref) if Required
-> df$gender <- relevel(df$gender, ref = 2)
-            </code></pre>
+<span># Install packages (run once)</span>
+<span>install.packages("survival")</span>
+<span>install.packages("survminer")</span>
 
-            <h4>R Codes for Cox Regression</h4>
+<span># Load libraries</span>
+<span>library(survival)</span>
+<span>library(survminer)</span>
 
-            <pre class="r-code"><code>> # Install packages (run once if not already installed)
-> install.packages("survival")
-> install.packages("survminer")
+<span># Define variables</span>
+<span># time: follow-up time</span>
+<span># status: event indicator (1 = event occurred, 0 = censored)</span>
+<span># predictor1, predictor2: explanatory variables</span>
 
-> # Load survival package
-> library(survival)
+<span>time <- df$time</span>
+<span>status <- df$status</span>
 
-> # Example dataset variables
-> # time: follow-up time
-> # status: event indicator (1 = event occurred, 0 = censored)
-> # predictor1, predictor2: explanatory variables
+<span># Create survival object</span>
+<span>surv_obj <- Surv(time, status)</span>
 
-> time <- df$time
-> status <- df$status
+<span># Fit Cox proportional hazards model</span>
+<span>cox_model <- coxph(surv_obj ~ predictor1 + predictor2, data = df)</span>
 
-> # Create survival object
-> surv_obj <- Surv(time, status)
+<span># View model summary</span>
+<span>summary(cox_model)</span>
 
-> # Fit Cox proportional hazards model
-> cox_model <- coxph( formula = surv_obj ~ predictor1 + predictor2, data = df)
+<span># Extract hazard ratios</span>
+<span>exp(coef(cox_model))</span>
 
-> # View model summary
-> summary(cox_model)
+<span># Confidence intervals for hazard ratios</span>
+<span>exp(confint(cox_model))</span>
 
-> # Extract hazard ratios
-> exp(coef(cox_model))
+<span># Test proportional hazards assumption</span>
+<span>ph_test <- cox.zph(cox_model)</span>
+<span>ph_test</span>
 
-> # Confidence intervals for hazard ratios
-> exp(confint(cox_model))
-
-> # Test proportional hazards assumption
-> ph_test <- cox.zph(cox_model)
-> ph_test
-
-> # Plot proportional hazards test
-> plot(ph_test)
-            </code></pre>
+<span># Plot proportional hazards test</span>
+<span>plot(ph_test)</span>
+</code></pre>
 
             <h4>Example</h4>
 
-            <pre class="r-code"><code>> coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +
-+       copd + hypertension, data = df)
+            <pre class="r-code"><code><span>coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +</span>
+<span class="cont">    copd + hypertension, data = df)</span>
 
 n = 1000, number of events = 492
 
@@ -448,30 +461,39 @@ Concordance = 0.572
 
             <h4>R Codes for Kaplan-Meier Plot Using Survminer</h4>
 
-            <pre class="r-code"><code>> # Load survminer package
-> library(survminer)
+<pre class="r-code"><code><span># Load required packages</span>
+<span>library(survival)</span>
+<span>library(survminer)</span>
 
-> # Fit Kaplan-Meier survival curves
-> fit <- survfit(surv_object ~ group, data = df)
+<span># Example dataset variables:</span>
+<span># time: follow-up time</span>
+<span># status: event indicator (1 = event occurred, 0 = censored)</span>
+<span># group: grouping variable (e.g., treatment vs control)</span>
 
-> # Plot survival curves using survminer
-> ggsurvplot(fit,
-+            data = df,
-+            risk.table = TRUE,
-+            pval = TRUE,
-+            conf.int = TRUE,
-+            xlab = "Time",
-+            ylab = "Survival probability",
-+            legend.title = "Group",
-+            legend.labs = c("Group 1", "Group 2"),
-+            palette = c("blue", "red"))
+<span># Create survival object</span>
+<span>surv_object <- Surv(time = df$time, event = df$status)</span>
 
-> # Alternative plot with "ggplot2" package
-> autoplot(fit) + theme_bw() 
+<span># Fit Kaplan-Meier survival curves by group</span>
+<span>fit <- survfit(surv_object ~ group, data = df)</span>
 
-> # Another Way to plot
-> plot(fit)
-            </code></pre>
+<span># Plot survival curves using survminer</span>
+<span>ggsurvplot(fit,</span>
+<span class="cont">    data = df,</span>
+<span class="cont">    risk.table = TRUE,       # Show number at risk</span>
+<span class="cont">    pval = TRUE,             # Show log-rank p-value</span>
+<span class="cont">    conf.int = TRUE,         # Show confidence interval</span>
+<span class="cont">    xlab = "Time",</span>
+<span class="cont">    ylab = "Survival probability",</span>
+<span class="cont">    legend.title = "Group",</span>
+<span class="cont">    legend.labs = c("Group 1", "Group 2"),</span>
+<span class="cont">    palette = c("blue", "red"))</span>
+
+<span># Alternative plot with ggplot2 (optional)</span>
+<span>autoplot(fit) + theme_bw()</span>
+
+<span># Simple base R plot (optional)</span>
+<span>plot(fit)</span>
+</code></pre>
 
             <ul>
                 <li><strong>risk.table:</strong> Displays the number of individuals at risk at each time point.</li>
@@ -492,37 +514,33 @@ Concordance = 0.572
 
             <h4>R Codes for Handling Missing Values</h4>
 
-            <pre class="r-code"><code>> # The appropriate method depends on the study design, the proportion of missing values, and the assumptions of the statistical analysis.
+<pre class="r-code"><code><span># Handling missing values depends on study design, proportion of missing data, and statistical assumptions</span>
 
-> # Suppose "ethnicgroup" is a categorical (factor) variable
-> ethnicgroup <- factor(df[,"ethnicgroup"])
+<span># Suppose "ethnicgroup" is a categorical (factor) variable</span>
+<span>ethnicgroup <- factor(df$ethnicgroup)</span>
 
-> # Add a new category "9" to represent missing values
-> levels(ethnicgroup) <- c(levels(ethnicgroup), "9")
+<span># Option 1: Add a new category "9" to represent missing values</span>
+<span>levels(ethnicgroup) <- c(levels(ethnicgroup), "9")</span>
+<span>ethnicgroup[is.na(ethnicgroup)] <- "9"</span>
 
-> # Replace NA values with "9"
-> ethnicgroup[is.na(ethnicgroup)] <- "9"
+<span># Option 2: Remove rows containing any missing values</span>
+<span>df_complete <- na.omit(df)</span>
 
-> # Other ways to handle missing values
+<span># Option 3: Keep only complete cases</span>
+<span>df_complete <- df[complete.cases(df), ]</span>
 
-> # Remove rows containing any missing values
-> df_complete <- na.omit(df)
+<span># Option 4: Replace missing values with a constant</span>
+<span>df$ethnicgroup[is.na(df$ethnicgroup)] <- "9"</span>
 
-> # Keep only complete cases
-> df_complete <- df[complete.cases(df), ]
+<span># Option 5: Replace missing numeric values with mean (e.g., age)</span>
+<span>df$age[is.na(df$age)] <- mean(df$age, na.rm = TRUE)</span>
 
-> # Replace missing values with a constant value
-> df$ethnicgroup[is.na(df$ethnicgroup)] <- 9
+<span># Option 6: Replace missing categorical values with median category (if numeric encoding)</span>
+<span>df$income[is.na(df$income)] <- median(df$income, na.rm = TRUE)</span>
 
-> # Replace missing values with mean for numeric variables such as age
-> df$age[is.na(df$age)] <- mean(df$age, na.rm = TRUE)
-
-> # Replace missing values with median for categorical variables
-> df$income[is.na(df$ethnicgroup)] <- median(df$ethnicgroup, na.rm = TRUE)
-
-> # Create a missing-value indicator variable
-> df$ethnicgroup_missing <- ifelse(is.na(df$age), 1, 0)
-            </code></pre>
+<span># Option 7: Create a missing-value indicator variable</span>
+<span>df$ethnicgroup_missing <- ifelse(is.na(df$ethnicgroup), 1, 0)</span>
+</code></pre>
 
             <h4>Non-Convergence</h4>
 
@@ -552,13 +570,27 @@ Concordance = 0.572
             </ul>
 
             <h4>R Codes to Check Proportionality Assumption using Shoenfeld resuduals</h4>
-            <p style="text-align: center;">⚠️ Before all R codes, load both "survival" and "survminer" packages using library().</p>
 
-            <pre class="r-code"><code>> fit <- coxph(Surv(fu_time, death) ~ gender)
-> temp <- cox.zph(fit)
-> print(temp)
-> plot(temp) # or ggcoxzph(temp) from the "survminer" package
-            </code></pre>
+<pre class="r-code"><code><span>library(survival)</span>
+<span>library(survminer)</span>
+
+<span># Fit a Cox proportional hazards model</span>
+<span># fu_time: follow-up time, death: event indicator (1=event, 0=censored)</span>
+<span># gender: covariate</span>
+<span>fit <- coxph(Surv(fu_time, death) ~ gender, data = df)</span>
+
+<span># Test proportional hazards assumption</span>
+<span>temp <- cox.zph(fit)</span>
+
+<span># View test results (p-values for each covariate and global test)</span>
+<span>print(temp)</span>
+
+<span># Plot scaled Schoenfeld residuals to check assumption</span>
+<span>plot(temp)  # Base R plot</span>
+
+<span># Optional: nicer plot using survminer</span>
+<span>ggcoxzph(temp)</span>
+</code></pre>
 
             <figure class="figure">
                 <img src="proportionality-assessment.png" alt="Assessment of Proportional Hazards Assumption Using Shoenfeld Residuals" class="survival-plot">
@@ -622,9 +654,21 @@ Concordance = 0.572
 
             <h4>R Codes to Check Proportionality Assumption using Deviance resuduals</h4>
 
-            <pre class="r-code"><code>> res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
-> ggcoxdiagnostics(res.cox, type = "deviance", linear.predictions = FALSE, ggtheme = theme_bw())
-            </code></pre>
+<pre class="r-code"><code><span># Load required libraries</span>
+<span>library(survival)</span>
+<span>library(survminer)</span>
+
+<span># Fit a Cox proportional hazards model</span>
+<span># fu_time: follow-up time, death: event indicator (1=event, 0=censored)</span>
+<span># age: numeric covariate</span>
+<span>res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)</span>
+
+<span># Perform diagnostic plot for deviance residuals</span>
+<span>ggcoxdiagnostics(res.cox,</span>
+<span class="cont">    type = "deviance",                # type of residuals</span>
+<span class="cont">    linear.predictions = FALSE,       # plot vs observed rather than linear predictor</span>
+<span class="cont">    ggtheme = theme_bw())             # clean ggplot2 theme</span>
+</code></pre>
 
             <figure class="figure">
                 <img src="proportionality-assessment_3.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
@@ -648,9 +692,22 @@ Concordance = 0.572
 
             <h4>R Codes to Check Proportionality Assumption using DFBETA residuals</h4>
 
-            <pre class="r-code"><code>> res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
-> ggcoxdiagnostics(res.cox, type = "dfbeta", linear.predictions = FALSE, ggtheme = theme_bw())
-            </code></pre>
+<pre class="r-code"><code><span># Load required libraries</span>
+<span>library(survival)</span>
+<span>library(survminer)</span>
+
+<span># Fit a Cox proportional hazards model</span>
+<span># fu_time: follow-up time, death: event indicator (1=event, 0=censored)</span>
+<span># age: numeric covariate</span>
+<span>res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)</span>
+
+<span># Perform influence diagnostics (dfbeta residuals)</span>
+<span># dfbeta measures how each observation affects the estimated coefficients</span>
+<span>ggcoxdiagnostics(res.cox,</span>
+<span class="cont">    type = "dfbeta",                 # influence on coefficients</span>
+<span class="cont">    linear.predictions = FALSE,      # plot vs time rather than linear predictor</span>
+<span class="cont">    ggtheme = theme_bw())            # clean ggplot2 theme</span>
+</code></pre>
 
             <figure class="figure">
                 <img src="proportionality-assessment_2.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
@@ -675,9 +732,19 @@ Concordance = 0.572
 
             <h4>R Code to Check Proportionality Assumption Using Martingale Residuals</h4>
 
-            <pre class="r-code"><code>> res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)
-> ggcoxfunctional(Surv(fu_time, death_num) ~ age + log(age) + sqrt(age), data = df) # "survminer" package
-            </code></pre>
+<pre class="r-code"><code><span># Load required libraries</span>
+<span>library(survival)</span>
+<span>library(survminer)</span>
+
+<span># Fit a Cox proportional hazards model</span>
+<span># fu_time: follow-up time, death: event indicator (1=event, 0=censored)</span>
+<span># age: numeric covariate</span>
+<span>res.cox <- coxph(Surv(fu_time, death) ~ age, data = df)</span>
+
+<span># Check functional form of continuous covariates</span>
+<span># Compare age, log(age), sqrt(age) to see if linearity assumption holds</span>
+<span>ggcoxfunctional(Surv(fu_time, death) ~ age + log(age) + sqrt(age), data = df)</span>
+</code></pre>
 
             <figure class="figure">
                 <img src="proportionality-assessment_4.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
@@ -721,13 +788,24 @@ Concordance = 0.572
                 <li>The drawback of this approach is that it is no longer possible to compare the effect of each gender on mortality.</li>
             </ul>
 
-            <pre class="r-code"><code>> fit <- coxph(Surv(fu_time, death) ~ gender + tt(gender)) # <em>tt</em> is the time transform function
-                > summary(fit)
-            </code></pre>
+<pre class="r-code"><code><span># Load required library</span>
+<span>library(survival)</span>
+
+<span># Fit a Cox model with a time-dependent covariate</span>
+<span># fu_time: follow-up time, death: event indicator (1=event, 0=censored)</span>
+<span># gender: covariate</span>
+<span># tt() specifies a time-transform function for time-dependent effect</span>
+<span>fit <- coxph(Surv(fu_time, death) ~ gender + tt(gender), data = df,</span>
+<span class="cont">             tt = function(x, t, ...) x * log(t + 1))  # example transformation</span>
+
+<span># View model summary</span>
+<span>summary(fit)</span>
+</code></pre>
 
             <h4>Example</h4>
 
             <pre class="r-code"><code>Call:
+                
 coxph(formula = Surv(fu_time, death) ~ gender + tt(gender))
 
 n = 1000, number of events = 492
@@ -829,11 +907,11 @@ Score (logrank) test  = 0.48  on 2 df,  p = 0.8
     <footnote>
         <h4>References</h4>
         <ul>
-            <li><a href="https://www.coursera.org/specializations/statistical-analysis-r-public-health" target="_blank">Statistical Analysis with R for Public Health, University of Imperial College London (Coursera)</a></li>
-            <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandlifeexpectancies/methodologies/guidetocalculatingnationallifetables" target="_blank">Guide to calculating national life tables</a></li>
-            <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1065034/" target="_blank">Statistics review 12: Survival analysis</a></li>
-            <li><a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/log-rank-test" target="_blank">Science Direct</a></li>
-            <li><a href="http://data.princeton.edu/wws509/notes/c7s1.html" target="_blank">Formulae for Cox Proportional Hazards Model</a></li>
+            <li><a href="https://www.coursera.org/specializations/statistical-analysis-r-public-health" target="_blank"><u>Statistical Analysis with R for Public Health, University of Imperial College London (Coursera)</u></a></li>
+            <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandlifeexpectancies/methodologies/guidetocalculatingnationallifetables" target="_blank"><u>Guide to calculating national life tables</u></a></li>
+            <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1065034/" target="_blank"><u>Statistics review 12: Survival analysis</u></a></li>
+            <li><a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/log-rank-test" target="_blank"><u>Science Direct</u></a></li>
+            <li><a href="http://data.princeton.edu/wws509/notes/c7s1.html" target="_blank"><u>Formulae for Cox Proportional Hazards Model</u></a></li>
         </ul>
         <p style="margin-bottom:-10px;"><strong>Example Notebook:</strong> <a href="https://www.kaggle.com/code/farshadparsayan/survival-analysis-heart-failure" target="_blank"><u>Survival Analysis Example</u></a></p>
         <p>Back to <a href="index.html"><u>Homepage</u></a></p>
