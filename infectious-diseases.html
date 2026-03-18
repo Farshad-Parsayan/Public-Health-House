@@ -306,9 +306,20 @@
         <li>Safe and clean water and food provision in low- and middle-income countries</li>
         <li>Avoid unnecessary medications, they have adverse effect on liver function</li>
       </ul>
-    </section>
 
-    <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Back to the Top</button>
+      </section>
+
+      <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Back to the Top</button>
+
+      <script>
+
+        history.pushState({}, "");
+
+        window.onpopstate = function(event) {
+          window.location.href = "index.html";
+        };
+        
+      </script>
 
   </body>
 

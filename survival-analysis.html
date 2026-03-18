@@ -953,6 +953,16 @@ Score (logrank) test  = 0.48  on 2 df,  p = 0.8
 
         <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Back to the Top</button>
 
+        <script>
+
+            history.pushState({}, "");
+
+            window.onpopstate = function(event) {
+            window.location.href = "index.html";
+            };
+                    
+        </script>
+
     </body>
 
         
