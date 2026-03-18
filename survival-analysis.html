@@ -33,6 +33,9 @@
         </ol>
 
 
+        <hr class="separator">
+
+
         <section>
 
             <h2 id="intro-survival-analysis">Introduction</h2>
@@ -48,6 +51,8 @@
             </ul>
 
         </section>
+
+        <hr class="middle">
 
         <section>
 
@@ -113,6 +118,8 @@
             </div>
 
         </section>
+
+        <hr class="middle">
 
         <section>
             <h2 id="Kaplan-Meier-table">Kaplan-Meier Table</h2>
@@ -212,6 +219,8 @@
 
         </section>
 
+        <hr class="middle">
+
         <section>
             <h2 id="survival-curve">Survival Curve</h2>
             <ul>
@@ -272,6 +281,9 @@
 </code></pre>
 
         </section>
+
+        <hr class="middle">
+
         <section>
             <h2 id="log-rank-test">Log-Rank Test</h2>
             <ul>
@@ -282,6 +294,7 @@
             </ul>
 
             <h4>R Codes for Log-Rank Test</h4>
+            
 <pre class="r-code"><code><span># Load survival package</span>
 <span>library(survival)</span>
 
@@ -329,7 +342,7 @@
 
             <h4>Example</h4>
 
-            <pre class="r-code"><code><span># Log-rank test comparing age groups</span>
+<pre class="r-code"><code><span># Log-rank test comparing age groups</span>
 <span>survdiff(formula = Surv(fu_time, death_num) ~ age_65plus, data = df)</span>
 
                 N Observed Expected (O-E)^2/E (O-E)^2/V
@@ -337,9 +350,10 @@ age_65plus=<65 115       18       67     35.85      41.7
 age_65plus=≥65 885      474      425      5.65      41.7
 
 Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
-            </code></pre>
+</code></pre>
 
             <h4>Interpretation</h4>
+
             <ul>
                 <li>The chi-squared statistic is 41.7 with 1 degree of freedom.</li>
                 <li>The p-value is extremely small (1e-10), indicating a statistically significant difference.</li>
@@ -349,6 +363,8 @@ Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
             </ul>
 
         </section>
+
+        <hr class="middle">
 
         <section>
 
@@ -438,7 +454,7 @@ Chisq= 41.7  on 1 degrees of freedom, p= 1e-10
 
             <h4>Example</h4>
 
-            <pre class="r-code"><code><span>coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +</span>
+<pre class="r-code"><code><span>coxph(formula = Surv(fu_time, death_num) ~ age_65plus + diabetes +</span>
 <span class="cont">    copd + hypertension, data = df)</span>
 
 n = 1000, number of events = 492
@@ -455,7 +471,7 @@ Wald test             = 37.17  on 4 df, p = 2e-07
 Score (log-rank) test = 43.55  on 4 df, p = 8e-09
 
 Concordance = 0.572
-            </code></pre>
+</code></pre>
 
             <h4>Definitions</h4>
 
@@ -574,7 +590,10 @@ Concordance = 0.572
                 <li>Consequences: parameter estimates are unreliable, standard errors cannot be computed correctly, model results should not be interpreted</li>
                 <li>Solutions: increase sample size, remove or combine highly correlated variables, simplify the model, standardize variables, provide better starting values, use penalized methods</li>
             </ul>
+
         </section>
+
+        <hr class="middle">
 
         <section>
 
@@ -695,13 +714,16 @@ Concordance = 0.572
 </code></pre>
 
             <figure class="figure">
+                
                 <img src="proportionality-assessment_3.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
+                
                 <figcaption style="margin-top: -25px;">
                     DFBETA residuals for the variable <em>age</em> from the Cox proportional hazards model.
         Each point represents the influence of an individual observation on the estimated
         regression coefficient for age. The blue smoothed line shows the overall trend,
         while the dashed red line represents zero influence.
                 </figcaption>
+
             </figure>
 
             <h4>Interpretation</h4>
@@ -734,12 +756,15 @@ Concordance = 0.572
 </code></pre>
 
             <figure class="figure">
+
                 <img src="proportionality-assessment_2.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
+                
                 <figcaption style="margin-top: -25px;">
                     Deviance residuals for the variable <em>age</em> from the Cox proportional hazards model. These residuals measure
         the contribution of each observation to the model deviance and help identify outliers
         or observations poorly predicted by the model.
                 </figcaption>
+
             </figure>
 
             <h4>Interpretation</h4>
@@ -771,7 +796,9 @@ Concordance = 0.572
 </code></pre>
 
             <figure class="figure">
+
                 <img src="proportionality-assessment_4.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
+                
                 <figcaption style="margin-top: -25px;">
                     Assessment of the proportional hazards assumption for the variable <em>age</em>
                     using Martingale residuals. The plots display the Martingale residuals from a
@@ -780,6 +807,7 @@ Concordance = 0.572
                     lowess (locally weighted scatterplot smoothing) curve, which indicates the observed relationship
                     between the covariate and the risk of death.
                 </figcaption>
+
             </figure>
 
             <h4>Interpretation</h4>
@@ -828,7 +856,7 @@ Concordance = 0.572
 
             <h4>Example</h4>
 
-            <pre class="r-code"><code>Call:
+<pre class="r-code"><code>Call:
                 
 coxph(formula = Surv(fu_time, death) ~ gender + tt(gender))
 
@@ -848,7 +876,7 @@ R-square = 0   (max possible = 0.997)
 Likelihood ratio test = 0.49  on 2 df,  p = 0.8
 Wald test             = 0.48  on 2 df,  p = 0.8
 Score (logrank) test  = 0.48  on 2 df,  p = 0.8
-            </code></pre>
+</code></pre>
 
             <div class="table-container">
 
@@ -928,8 +956,10 @@ Score (logrank) test  = 0.48  on 2 df,  p = 0.8
     </body>
 
         
-    <footnote>
+    <footer>
+
         <h4 id="ref-survival-analysis">References</h4>
+
         <ul>
             <li><a href="https://www.coursera.org/specializations/statistical-analysis-r-public-health" target="_blank"><u>Statistical Analysis with R for Public Health, University of Imperial College London (Coursera)</u></a></li>
             <li><a href="https://en.wikipedia.org/wiki/Survival_analysis" target="_blank"><u>Wikipedia</u></a></li>
@@ -938,9 +968,11 @@ Score (logrank) test  = 0.48  on 2 df,  p = 0.8
             <li><a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/log-rank-test" target="_blank"><u>Science Direct</u></a></li>
             <li><a href="http://data.princeton.edu/wws509/notes/c7s1.html" target="_blank"><u>Formulae for Cox Proportional Hazards Model</u></a></li>
         </ul>
+
         <p style="margin-bottom:-10px;"><strong>Example Notebook:</strong> <a href="https://www.kaggle.com/code/farshadparsayan/survival-analysis-heart-failure" target="_blank"><u>Survival Analysis Example</u></a></p>
         <p>Return to <a href="index.html"><u>Homepage</u></a></p>
         <p"><strong>Creator:</strong> Farshad Parsayan</p>
-    </footnote>
+        
+    </footer>
 
 </html>

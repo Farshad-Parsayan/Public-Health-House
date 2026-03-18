@@ -44,12 +44,23 @@ h4 {
     scroll-margin-top: 40px;
 }
 
+hr.middle {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #555, transparent);
+  margin: 24px 0;
+  border-radius: 2px;
+  opacity: 0.6;
+  scroll-margin-top: 40px;
+}
+
 .separator {
-    height: 1px;
-    border: none;
-    background-color: #333;
-    margin: 15px 0;
-    scroll-margin-top: 40px;
+  border: none;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #000, transparent);
+  margin: 26px 0;
+  border-radius: 3px;
+  scroll-margin-top: 40px;
 }
 
 .logo {
