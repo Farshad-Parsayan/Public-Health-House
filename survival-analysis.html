@@ -18,6 +18,7 @@ log-rank test, and Cox proportional hazards model.">
     <p class="about" style="margin-top: -10px;"><strong>Prerequisites:</strong> install R and RStudio from <a href="https://posit.co/download/rstudio-desktop/">Posit.</a> Required packages: survival & survminer</p>
     <h2>Topics</h2>
     <ol>
+        <li><a href="#intro-survival-analysis">Introduction</a></li>
         <li><a href="#life-table">Life Table</a></li>
         <li><a href="#Kaplan-Meier-table">Kaplan-Meier Table</a></li>
         <li><a href="#survival-curve">Survival Curve</a></li>
@@ -32,7 +33,26 @@ log-rank test, and Cox proportional hazards model.">
 
 
         <section>
+
+            <h2 id="intro-survival-analysis">Introduction</h2>
+
+            <ul>
+                <li>Survival analysis is a branch of statistics for analyzing the expected duration of time until one event occurs.</li>
+                <li>It is also known as time-to-event analysis. It involves modeling of time to event data. Event is death or failure.</li>
+                <p style="margin-bottom: 25px;"></p>
+                <li><strong>It calculates:</strong></li>
+                <li>The proportion of a population which will survive past a certain time.</li>
+                <li>Of those that survive, the rate they will die or fail.</li>
+                <li>Whether multiple causes of death or failure can be taken into account.</li>
+                <li>The way particular circumstances or characteristics increase or decrease the probability of survival.</li>
+            </ul>
+
+        </section>
+
+        <section>
+
             <h2 id="life-table">Life Table</h2>
+
             <ul>
                 <li>A life table is a demographic tool used to analyze death rates and calculate life expectancies at various ages.</li>
                 <li>Two Different Kinds: cohort or generational life tables, current or period life tables</li>
@@ -912,6 +932,7 @@ Score (logrank) test  = 0.48  on 2 df,  p = 0.8
         <h4>References</h4>
         <ul>
             <li><a href="https://www.coursera.org/specializations/statistical-analysis-r-public-health" target="_blank"><u>Statistical Analysis with R for Public Health, University of Imperial College London (Coursera)</u></a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Survival_analysis">Wikipedia</a></li>
             <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandlifeexpectancies/methodologies/guidetocalculatingnationallifetables" target="_blank"><u>Guide to calculating national life tables</u></a></li>
             <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1065034/" target="_blank"><u>Statistics review 12: Survival analysis</u></a></li>
             <li><a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/log-rank-test" target="_blank"><u>Science Direct</u></a></li>
