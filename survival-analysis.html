@@ -636,7 +636,7 @@ Concordance = 0.572
             <figure class="figure">
                 <img src="proportionality-assessment.png" alt="Assessment of Proportional Hazards Assumption Using Shoenfeld Residuals" class="survival-plot">
                 <figcaption style="margin-top: -25px;">
-                    Assessment of the proportional hazards assumption for the variable <em>gender</em>
+                    Assessment of the proportional hazards assumption for the variable gender
                     using Schoenfeld residuals. The solid line represents the estimated time-varying
                     coefficient β(t), and the dashed lines represent the 95% confidence intervals.
                 </figcaption>
@@ -682,11 +682,11 @@ Concordance = 0.572
             <ul>
 
                 <li>The proportional hazards assumption was assessed using Schoenfeld residuals.</li>
-                <li>The test for the variable <strong>gender</strong> produced a chi-square statistic of 1.24 with a p-value of 0.26.</li>
+                <li>The test for the variable gender produced a chi-square statistic of 1.24 with a p-value of 0.26.</li>
                 <li>Since the p-value is greater than 0.05, there is no evidence that the proportional hazards assumption is violated for this variable.</li>
                 <li>The global test also shows a p-value of 0.26, suggesting that the proportional hazards assumption holds for the model overall.</li>
                 <li>The Schoenfeld residual plot shows no clear systematic trend over time, which further supports the proportional hazards assumption.</li>
-                <li>The line is pretty flat, meaning that the effect of gender changes little during the follow-up period. That’s good news.</li>
+                <li>The line is pretty flat, meaning that the effect of gender changes little during the follow-up period. That is good news.</li>
                 <li>A prettier version of the above plot can be obtained from the function ggcoxzph() in the "survminer" package.</li>
                 <li>This produces graphs of the scaled Schoenfeld residuals against the transformed time for each covariate</li>
                 <li>This method does not work well for continuous predictors or categorical ones with many levels because the graph becomes too cluttered.</li>
@@ -716,7 +716,7 @@ Concordance = 0.572
                 <img src="proportionality-assessment_3.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
                 
                 <figcaption style="margin-top: -25px;">
-                    DFBETA residuals for the variable <em>age</em> from the Cox proportional hazards model.
+                    DFBETA residuals for the variable age from the Cox proportional hazards model.
         Each point represents the influence of an individual observation on the estimated
         regression coefficient for age. The blue smoothed line shows the overall trend,
         while the dashed red line represents zero influence.
@@ -731,7 +731,7 @@ Concordance = 0.572
                 <li>Values close to zero indicate that the observation has little influence on the coefficient estimate.</li>
                 <li>Large positive or negative values may indicate influential observations that substantially affect the model results.</li>
                 <li>In this plot, most points are centered around zero and no strong systematic trend is observed.</li>
-                <li>This suggests that no single observation has an excessively large influence on the estimated coefficient for <strong>age</strong>.</li>
+                <li>This suggests that no single observation has an excessively large influence on the estimated coefficient for age.</li>
             </ul>
 
             <h4>R Codes to Check Proportionality Assumption using DFBETA residuals</h4>
@@ -769,8 +769,8 @@ Concordance = 0.572
 
             <ul>
                 <li>Deviance residuals assess how well each observation is fitted by the Cox proportional hazards model.</li>
-                <li>Positive values correspond to individuals that <em>died too soon</em> compared with expected survival times.</li>
-                <li>Negative values correspond to individual that <em>lived too long</em> compared with expected survival times.</li>
+                <li>Positive values correspond to individuals that died too soon compared with expected survival times.</li>
+                <li>Negative values correspond to individual that lived too long compared with expected survival times.</li>
                 <li>Observations with large positive or negative residuals may represent potential outliers or poorly fitted cases.</li>
                 <li>In this plot, most residuals are scattered around zero without a clear pattern.</li>
                 <li>The smoothed trend line remains close to zero, indicating no systematic lack of fit across observations.</li>
@@ -798,7 +798,7 @@ Concordance = 0.572
                 <img src="proportionality-assessment_4.png" alt="Assessment of Proportional Hazards Assumption Using Deviance Residuals" class="survival-plot">
                 
                 <figcaption style="margin-top: -25px;">
-                    Assessment of the proportional hazards assumption for the variable <em>age</em>
+                    Assessment of the proportional hazards assumption for the variable age
                     using Martingale residuals. The plots display the Martingale residuals from a
                     null Cox model (a model with no covariates) plotted against three different
                     transformations of age: linear, logarithmic, and square root. The solid black line represents a
@@ -813,13 +813,13 @@ Concordance = 0.572
             <ul>
                 <li>Martingale residuals are used to determine the correct functional form of a continuous variable.</li>
                 <li>Martingale residuals may present any value between minus infinity and 1) and have a mean of zero.</li>
-                <li>Martingale residuals near 1 represent individuals that <em>died too soon</em>.</li>
-                <li>Large negative values correspond to individuals that <em>lived too long</em>.</li>
+                <li>Martingale residuals near 1 represent individuals that died too soon.</li>
+                <li>Large negative values correspond to individuals that lived too long.</li>
                 <li>The plots should give you nice straight line if the assumption is valid.</li>
                 <li>A perfectly specified model would show a linear LOESS curve, suggesting the transformation accurately captures the covariate's effect on the hazard rate.</li>
                 <li>In all three plots, the LOESS curve shows a consistent, monotonic increase.</li>
                 <li>as age (or its transformation) increases, the observed number of deaths exceeds the expected number predicted by a null model, confirming age is a significant risk factor.</li>
-                <li>There is a visible <em>bend</em> or change in the slope of the residuals around the age of 80 (log(80) = 4.38).</li>
+                <li>There is a visible bend or change in the slope of the residuals around the age of 80 (log(80) = 4.38).</li>
                 <li>This suggests that the increase in mortality risk may accelerate or change behavior in the old population.</li>
                 <li>Because the relationship is not perfectly linear across the entire age span, using a natural cubic spline or a penalized spline (pspline) might be better.</li>
             </ul>
@@ -830,7 +830,7 @@ Concordance = 0.572
                 <li>Add a coefficient for the statistical interaction between the variable and time.</li>
                 <li>This allows for the difference in risk by the variable to change over time.</li>
                 <li> If this interaction term is not statistically significant, then it follows that the assumption is valid.</li>
-                <li>The easiest way to do this in R is via the <em>tt</em> function (short for <em>time transform</em>).</li>
+                <li>The easiest way to do this in R is via the tt function (short for time transform).</li>
                 <li>There is also a third simple way of dealing with the problem: stratify the analysis by the variable that is causing the problems.</li>
                 <li>If the p-value is low but the hazards are proportional for most of the follow-up period, divide the survival analysis into two time periods.</li>
                 <li>Fit one model when things are fine, i.e. when the assumption is valid, and another model to cover the later follow-up period when the assumption is not valid.</li>
@@ -921,9 +921,9 @@ Score (logrank) test  = 0.48  on 2 df,  p = 0.8
 
             <ul>
 
-                <li>The hazard ratio for <strong>gender</strong> is 1.90, so individuals in gender group 2 have approximately 1.9 times the hazard compared with the reference group.</li>
+                <li>The hazard ratio for gender is 1.90, so individuals in gender group 2 have approximately 1.9 times the hazard compared with the reference group.</li>
                 <li>However, the p-value (0.513) is greater than 0.05, indicating that this association is not statistically significant.</li>
-                <li>The time interaction term <strong>tt(gender)</strong> evaluates whether the effect of gender changes over time.</li>
+                <li>The time interaction term tt(gender) evaluates whether the effect of gender changes over time.</li>
                 <li>The coefficient for the interaction term is not statistically significant (p = 0.529), suggesting no evidence that the effect of gender varies over time.</li>
                 <li>The wide confidence intervals also indicate substantial uncertainty in the estimated effects.</li>
                 <li>Overall model tests (Likelihood ratio, Wald, and Score tests) all produce p-values of approximately 0.8.</li>
